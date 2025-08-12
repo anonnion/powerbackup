@@ -1,0 +1,22 @@
+[1mdiff --git a/package.json b/package.json[m
+[1mindex 96dd0be..774a489 100644[m
+[1m--- a/package.json[m
+[1m+++ b/package.json[m
+[36m@@ -1,7 +1,7 @@[m
+ {[m
+   "name": "powerbackup",[m
+   "version": "2.1.3",[m
+[31m-  "description": "Multi-Database Backup & Restore Tool with Beautiful Logging",[m
+[32m+[m[32m  "description": "Multi-Database Backup & Restore Tool v2.1.3 with Beautiful Logging & Restore Locations",[m
+   "main": "src/index.js",[m
+   "bin": {[m
+     "powerbackup": "src/cli.js"[m
+[36m@@ -64,7 +64,7 @@[m
+   "bugs": {[m
+     "url": "https://github.com/anonnion/powerbackup/issues"[m
+   },[m
+[31m-  "homepage": "https://github.com/anonnion/powerbackup#readme",[m
+[32m+[m[32m  "homepage": "https://anonnion.github.io/powerbackup/",[m
+   "files": [[m
+     "src/",[m
+     "docs/",[m

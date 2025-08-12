@@ -4,6 +4,15 @@ All notable changes to PowerBackup will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## \[2.1.4] - 2025-08-12
+
+### 🔧 Fixed
+
+* **Branch References**: Fixed all 'main' branch references to 'master' in documentation
+* **NPM Header**: Updated package description to show correct version in npm header
+* **Homepage URL**: Fixed homepage URL to point to GitHub Pages instead of GitHub README
+* **Version Consistency**: Updated all version references to v2.1.4
+
 ## \[2.1.3] - 2025-08-12
 
 ### 🔧 Fixed
@@ -188,6 +197,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and 
 
 ## Version History
 
+* **v2.1.4**: Branch references and npm header fixes.
 * **v2.1.3**: README update and version consistency fixes.
 * **v2.1.2**: Documentation updates and download statistics.
 * **v2.1.1**: Security fixes and code quality improvements.

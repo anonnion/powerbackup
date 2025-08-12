@@ -14,11 +14,11 @@ import figlet from 'figlet';
 // Display beautiful banner
 function showBanner() {
     console.log(chalk.cyan(figlet.textSync('PowerBackup', { font: 'Standard' })));
-    console.log(chalk.gray('Multi-Database Backup & Restore Tool v2.1.3\n'));
+    console.log(chalk.gray('Multi-Database Backup & Restore Tool v2.1.4\n'));
 }
 
 const program = new Command();
-program.version('2.1.3').description('Multi-DB backup & rotation tool with beautiful logging & restore locations').option('-c, --config <path>', 'Config file path', './src/config/config.json');
+program.version('2.1.4').description('Multi-DB backup & rotation tool with beautiful logging & restore locations').option('-c, --config <path>', 'Config file path', './src/config/config.json');
 
 program.command('list-dbs').description('List configured databases').action(listDbs);
 program.command('add-db').description('Add a new database').action(addDb);
@@ -559,7 +559,7 @@ async function main() {
 
 // Beautiful help display
 function showBeautifulHelp() {
-    console.log(chalk.cyan('\n🚀 PowerBackup v2.1.3 - Quick Start Guide\n'));
+    console.log(chalk.cyan('\n🚀 PowerBackup v2.1.4 - Quick Start Guide\n'));
     
     console.log(chalk.yellow('📋 Database Management:'));
     console.log(`  ${chalk.green('powerbackup list-dbs')}     - List all configured databases`);
