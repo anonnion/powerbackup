@@ -4,6 +4,29 @@ All notable changes to PowerBackup will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## \[2.1.2] - 2025-08-12
+
+### 📚 Documentation
+
+* **Download Statistics**: Added comprehensive download statistics to documentation page
+* **NPM Badges**: Added npm version and download badges to header and stats sections
+* **GitHub Statistics**: Added GitHub stars, forks, and issues badges
+* **Installation Methods**: Added installation method badges with proper styling
+* **Version Updates**: Updated all version references to v2.1.2
+
+### 🎨 UI/UX
+
+* **Enhanced Documentation**: Beautiful download statistics section with glass morphism design
+* **Interactive Badges**: All badges are clickable and link to relevant pages
+* **Responsive Design**: Download statistics work on all screen sizes
+* **Real-time Data**: All statistics pull live data from npm and GitHub
+
+### 🔧 Fixed
+
+* **NPM Install Badge**: Fixed npm install badge styling and visibility
+* **Branch References**: Ensured all references use correct branch names
+* **Version Consistency**: Updated all files to reflect v2.1.2
+
 ## \[2.1.1] - 2025-08-12
 
 ### 🔒 Security
@@ -157,6 +180,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and 
 
 ## Version History
 
+* **v2.1.2**: Documentation updates and download statistics.
 * **v2.1.1**: Security fixes and code quality improvements.
 * **v2.1.0**: Restore locations feature and CLI improvements.
 * **v2.0.1**: Dependency updates and global package fixes.
