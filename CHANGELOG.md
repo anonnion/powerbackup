@@ -4,6 +4,24 @@ All notable changes to PowerBackup will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## \[2.1.1] - 2025-08-12
+
+### 🔒 Security
+
+* **Dependency Update**: Updated inquirer from v9.3.7 to v12.9.1 to fix high severity vulnerability
+* **Vulnerability Fix**: Resolved tmp package vulnerability through inquirer update
+* **Security Audit**: All security vulnerabilities now resolved
+
+### 🔧 Fixed
+
+* **Code Quality**: Replaced console.log with log.info in restore-locations.js for production code
+* **Production Code**: Ensured all logging uses proper logger instead of console.log
+
+### 🧪 Testing
+
+* **All Tests Passing**: Verified functionality with updated dependencies
+* **Security Audit**: npm audit now shows 0 vulnerabilities
+
 ## \[2.1.0] - 2025-08-12
 
 ### 🚀 Added
@@ -139,6 +157,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and 
 
 ## Version History
 
+* **v2.1.1**: Security fixes and code quality improvements.
 * **v2.1.0**: Restore locations feature and CLI improvements.
 * **v2.0.1**: Dependency updates and global package fixes.
 * **v2.0.0**: Node.js rewrite with logging, automation, and multi-DB support.
