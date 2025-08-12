@@ -394,7 +394,81 @@ PowerBackup can run backups on autopilot. Choose your weapon:
 * **Systemd**: Service-based automation
 * **Windows Task Scheduler**: Native Windows scheduling
 
-*(Detailed instructions remain from original)*
+### 🎯 **Recommended: PM2 (Production)**
+
+```bash
+# Install PM2
+npm run install:pm2
+
+# Start scheduler
+npm run pm2:start
+
+# Check status
+npm run pm2:status
+
+# View logs
+npm run pm2:logs
+```
+
+### 🐧 **Linux/Unix: Systemd Service**
+
+```bash
+# Install systemd service
+npm run install:systemd
+
+# Start service
+sudo systemctl start powerbackup
+
+# Enable auto-start
+sudo systemctl enable powerbackup
+```
+
+### ⏰ **Linux/Unix: Cron Jobs**
+
+```bash
+# Install cron jobs
+npm run install:cron
+
+# Manual setup
+crontab -e
+# Add: 0 * * * * cd /path/to/powerbackup && node src/scheduler.js src/config/config.json once
+```
+
+### 🪟 **Windows: Task Scheduler**
+
+```powershell
+# Install Windows Task Scheduler
+npm run install:windows
+
+# Or run as Administrator
+powershell -ExecutionPolicy Bypass -File install-windows-task.ps1
+```
+
+### 📋 **Retention Rules**
+
+Configure automatic pruning in your database config:
+
+```json
+{
+  "name": "myapp",
+  "type": "mysql",
+  "url": "mysql://user:pass@localhost/myapp",
+  "keep": {
+    "hourly": 24,    // Keep 24 hourly backups
+    "daily": 7,      // Keep 7 daily backups
+    "weekly": 4,     // Keep 4 weekly backups
+    "monthly": 12,   // Keep 12 monthly backups
+    "yearly": 0      // Keep 0 yearly backups
+  },
+  "test_restore": {
+    "enabled": true,
+    "hour": 3        // Run test restore at 3 AM
+  }
+}
+```
+
+📖 **For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)**
+
 
 ---
 
@@ -404,7 +478,25 @@ PowerBackup can run backups on autopilot. Choose your weapon:
 * Add public keys for asymmetric encryption
 * Lock down file permissions
 
-*(Commands remain as in original)*
+
+### GPG Encryption
+
+1. **Create Passphrase File**:
+```bash
+echo "your-secure-passphrase" > src/config/passphrase
+chmod 600 src/config/passphrase
+```
+
+2. **Public Key Encryption** (Optional):
+```bash
+# Add recipient public keys to config
+{
+  "gpg": {
+    "recipients": ["user@example.com", "backup@company.com"]
+  }
+}
+```
+
 
 ---
 
