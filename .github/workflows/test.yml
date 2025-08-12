@@ -215,7 +215,7 @@ jobs:
         # Test that CLI can be executed (with help flag to avoid actual execution)
         node src/cli.js --help > /dev/null 2>&1 && echo "✅ CLI execution works" || echo "❌ CLI execution failed"
         
-        # Test that config file exists and is valid JSON
-        ls -la src/config/ && node -e "import('fs/promises').then(fs => fs.readFile('src/config/config.json', 'utf8').then(data => { JSON.parse(data); console.log('✅ Config file is valid JSON'); })).catch(e => { console.error('❌ Config file validation failed:', e.message); process.exit(1); })"
+        # Test that config example file exists and is valid JSON
+        node -e "import('fs/promises').then(fs => fs.readFile('src/config/config.example.json', 'utf8').then(data => { JSON.parse(data); console.log('✅ Config example file is valid JSON'); })).catch(e => { console.error('❌ Config example file validation failed:', e.message); process.exit(1); })"
         
         echo "✅ Build verification completed"
