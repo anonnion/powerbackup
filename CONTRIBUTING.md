@@ -1,298 +1,281 @@
 # Contributing to PowerBackup
 
-Thank you for your interest in contributing to PowerBackup! This document provides guidelines and information for contributors.
+Thanks for thinking about contributing to **PowerBackup**! We want this process to be friendly, transparent, and welcoming—whether you’re fixing a typo, improving docs, or adding big new features.
 
-## 🚀 Quick Start
+---
+
+## 🔋💾 Quick Start
 
 1. **Fork** the repository
-2. **Clone** your fork: `git clone https://github.com/your-username/powerbackup.git`
-3. **Install** dependencies: `./setup.sh`
-4. **Create** a feature branch: `git checkout -b feature/amazing-feature`
+2. **Clone** your fork:
+
+   ```bash
+   git clone https://github.com/your-username/powerbackup.git
+   ```
+3. **Install** dependencies:
+
+   ```bash
+   ./setup.sh
+   ```
+4. **Create** a branch:
+
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
 5. **Make** your changes
-6. **Test** your changes: `npm run test:all`
-7. **Commit** your changes: `git commit -m 'feat: add amazing feature'`
-8. **Push** to your branch: `git push origin feature/amazing-feature`
+6. **Test** your changes:
+
+   ```bash
+   npm run test:all
+   ```
+7. **Commit** your changes:
+
+   ```bash
+   git commit -m 'feat: add amazing feature'
+   ```
+8. **Push** your branch:
+
+   ```bash
+   git push origin feature/amazing-feature
+   ```
 9. **Open** a Pull Request
+
+---
 
 ## 📋 Development Setup
 
 ### Prerequisites
-- Node.js 18+
-- Git
-- MySQL and/or PostgreSQL (for testing)
+
+* Node.js 18+
+* Git
+* MySQL and/or PostgreSQL (for testing)
 
 ### Installation
+
 ```bash
-# Clone the repository
 git clone https://github.com/your-username/powerbackup.git
 cd powerbackup
-
-# Run setup script
 chmod +x setup.sh
 ./setup.sh
-
-# Install development dependencies
 npm install
 ```
 
 ### Development Commands
+
 ```bash
-# Run tests
-npm run test:all
-npm run test:unit
-npm run test:integration
-
-# Development mode with hot reload
-npm run dev
-
-# Lint code (if ESLint is configured)
-npm run lint
-
-# Build (if needed)
-npm run build
+npm run test:all          # Run all tests
+npm run test:unit         # Unit tests
+npm run test:integration  # Integration tests
+npm run dev               # Hot-reload development mode
+npm run lint              # Lint code (if ESLint is configured)
+npm run build             # Build project (if needed)
 ```
+
+---
 
 ## 🎯 Code Style Guidelines
 
 ### JavaScript/Node.js
-- Use **ES Modules** (`import`/`export`)
-- Prefer **async/await** over callbacks
-- Use **const** and **let** (avoid **var**)
-- Follow **camelCase** for variables and functions
-- Use **PascalCase** for classes
-- Use **UPPER_SNAKE_CASE** for constants
+
+* Use **ES Modules** (`import` / `export`)
+* Prefer **async/await** over callbacks
+* Use `const` / `let` (avoid `var`)
+* **camelCase** for variables and functions
+* **PascalCase** for classes
+* **UPPER\_SNAKE\_CASE** for constants
 
 ### File Naming
-- Use **kebab-case** for file names: `backup-manager.js`
-- Use **PascalCase** for class files: `BackupManager.js`
-- Use **camelCase** for utility files: `fileUtils.js`
+
+* **kebab-case** for general files: `backup-manager.js`
+* **PascalCase** for class files: `BackupManager.js`
+* **camelCase** for utilities: `fileUtils.js`
 
 ### Documentation
-- Use **JSDoc** comments for functions and classes
-- Include **examples** in documentation
-- Keep **README.md** updated
-- Document **breaking changes** in CHANGELOG.md
+
+* JSDoc for functions and classes
+* Include examples
+* Keep **README.md** updated
+* Log breaking changes in **CHANGELOG.md**
 
 ### Logging
-- Use the **beautiful logging system** (`log.info`, `log.success`, etc.)
-- Include **emojis** for visual appeal
-- Use **descriptive messages**
-- Log **errors** with context
+
+* Use the built-in logging system (`log.info`, `log.success`, etc.)
+* Emojis encouraged
+* Provide context for errors
+
+---
 
 ## 🧪 Testing Guidelines
 
-### Test Structure
+### Structure
+
 ```javascript
 describe('Feature Name', () => {
-    it('should do something specific', () => {
-        // Arrange
-        const input = 'test';
-        
-        // Act
-        const result = functionToTest(input);
-        
-        // Assert
-        expect(result).toBe('expected');
-    });
+  it('should do something specific', () => {
+    const input = 'test';
+    const result = functionToTest(input);
+    expect(result).toBe('expected');
+  });
 });
 ```
 
-### Test Coverage
-- Aim for **90%+ test coverage**
-- Test **happy path** scenarios
-- Test **error conditions**
-- Test **edge cases**
-- Use **descriptive test names**
+### Goals
 
-### Running Tests
+* 90%+ coverage
+* Test happy paths, errors, and edge cases
+* Use clear, descriptive test names
+
+### Commands
+
 ```bash
-# Run all tests
 npm run test:all
-
-# Run specific test suites
 npm run test:unit
 npm run test:integration
-
-# Run tests with coverage (if configured)
 npm run test:coverage
 ```
 
+---
+
 ## 🔧 Git Workflow
 
-### Branch Naming
-- `feature/feature-name` - New features
-- `fix/bug-description` - Bug fixes
-- `docs/documentation-update` - Documentation changes
-- `refactor/code-improvement` - Code refactoring
-- `test/test-addition` - Test additions
+### Branch Names
+
+* `feature/feature-name`
+* `fix/bug-description`
+* `docs/update-docs`
+* `refactor/improve-code`
+* `test/add-tests`
 
 ### Commit Messages
-Use **Conventional Commits** format:
-```
-type(scope): description
 
-[optional body]
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-[optional footer]
-```
-
-**Types:**
-- `feat` - New feature
-- `fix` - Bug fix
-- `docs` - Documentation changes
-- `style` - Code style changes (formatting, etc.)
-- `refactor` - Code refactoring
-- `test` - Test additions or changes
-- `chore` - Build process or auxiliary tool changes
-
-**Examples:**
 ```bash
-git commit -m 'feat(backup): add incremental backup support'
-git commit -m 'fix(mysql): resolve connection timeout issues'
-git commit -m 'docs(readme): update installation instructions'
+git commit -m 'feat(backup): add incremental backup'
+git commit -m 'fix(mysql): resolve connection timeout'
 ```
 
-### Pull Request Guidelines
-1. **Title** should be descriptive and follow conventional commits
-2. **Description** should explain what and why (not how)
-3. **Include** tests for new features
-4. **Update** documentation if needed
-5. **Ensure** all tests pass
-6. **Add** screenshots for UI changes
+---
 
 ## 🐛 Bug Reports
 
 ### Before Submitting
-1. **Search** existing issues
-2. **Test** with the latest version
-3. **Reproduce** the issue consistently
 
-### Bug Report Template
+1. Search existing issues
+2. Test on the latest version
+3. Confirm you can reproduce consistently
+
+### Template
+
 ```markdown
 ## Bug Description
-Brief description of the issue
+Brief description
 
 ## Steps to Reproduce
 1. Step 1
 2. Step 2
-3. Step 3
 
 ## Expected Behavior
-What should happen
+...
 
 ## Actual Behavior
-What actually happens
+...
 
 ## Environment
-- OS: [e.g., Windows 10, Ubuntu 20.04]
-- Node.js Version: [e.g., 18.17.0]
-- PowerBackup Version: [e.g., 2.0.0]
-- Database: [e.g., MySQL 8.0, PostgreSQL 13]
+- OS: ...
+- Node.js: ...
+- PowerBackup: ...
+- Database: ...
 
-## Additional Information
-- Error messages
-- Screenshots
-- Log files
+## Additional Info
+Logs, screenshots, etc.
 ```
+
+---
 
 ## 💡 Feature Requests
 
-### Before Submitting
-1. **Search** existing issues
-2. **Consider** if it fits the project scope
-3. **Think** about implementation complexity
+Before requesting:
 
-### Feature Request Template
+* Search existing issues
+* Consider project scope
+* Think about implementation complexity
+
+### Template
+
 ```markdown
 ## Feature Description
-Brief description of the feature
+Brief description
 
 ## Use Case
-Why is this feature needed?
+Why this is needed
 
 ## Proposed Solution
-How should this feature work?
+...
 
-## Alternatives Considered
-Other approaches you've considered
-
-## Additional Information
-- Mockups
-- Examples
-- Related issues
+## Alternatives
+...
 ```
+
+---
 
 ## 🔒 Security Issues
 
-If you discover a security vulnerability, please **DO NOT** open a public issue. Instead:
+Please do **not** open public issues.
 
-1. **Email** the maintainers directly
-2. **Include** detailed information about the vulnerability
-3. **Wait** for a response before disclosing publicly
+1. Email the maintainers
+2. Provide full details
+3. Wait for a coordinated response
+
+---
 
 ## 📚 Documentation
 
-### Documentation Standards
-- Use **clear, concise language**
-- Include **code examples**
-- Provide **step-by-step instructions**
-- Use **screenshots** when helpful
-- Keep **links updated**
+* Clear and concise
+* Code examples where relevant
+* Step-by-step guides
+* Screenshots when useful
+* Keep links and references up to date
 
-### Documentation Structure
-- **README.md** - Quick start and overview
-- **DEPLOYMENT.md** - Deployment instructions
-- **CHANGELOG.md** - Version history
-- **CONTRIBUTING.md** - This file
-- **API.md** - API documentation (if applicable)
+---
 
 ## 🏷️ Release Process
 
-### Version Bumping
-- **Major** version for breaking changes
-- **Minor** version for new features
-- **Patch** version for bug fixes
+### Versioning
 
-### Release Checklist
-- [ ] All tests pass
-- [ ] Documentation updated
-- [ ] CHANGELOG.md updated
-- [ ] Version bumped in package.json
-- [ ] Release notes written
-- [ ] Tagged and pushed
+* **Major**: Breaking changes
+* **Minor**: New features
+* **Patch**: Bug fixes
+
+### Checklist
+
+* [ ] Tests pass
+* [ ] Docs updated
+* [ ] CHANGELOG.md updated
+* [ ] Version bumped
+* [ ] Tagged and pushed
+
+---
 
 ## 🤝 Code of Conduct
 
-### Our Standards
-- **Be respectful** and inclusive
-- **Be collaborative** and helpful
-- **Be constructive** in feedback
-- **Be patient** with newcomers
+* Be respectful, constructive, and inclusive
+* Avoid harassment, trolling, spam, or privacy violations
 
-### Unacceptable Behavior
-- **Harassment** or discrimination
-- **Trolling** or insulting comments
-- **Spam** or off-topic posts
-- **Violation** of privacy
+---
 
 ## 📞 Getting Help
 
-### Questions and Support
-- **GitHub Issues** - For bugs and feature requests
-- **GitHub Discussions** - For questions and support
-- **Documentation** - Check README.md and DEPLOYMENT.md first
+* GitHub Issues: bugs & features
+* GitHub Discussions: Q\&A
+* Documentation: check README & DEPLOYMENT first
 
-### Community Guidelines
-- **Be patient** - Maintainers are volunteers
-- **Be specific** - Provide detailed information
-- **Be respectful** - Follow the code of conduct
-- **Be helpful** - Help others when you can
+---
 
 ## 🎉 Recognition
 
-Contributors will be recognized in:
-- **README.md** - Contributors section
-- **CHANGELOG.md** - Release notes
-- **GitHub** - Contributors graph
+We love our contributors! You’ll be recognized in:
 
-Thank you for contributing to PowerBackup! 🚀
+* **README.md**
+* **CHANGELOG.md**
+* **GitHub contributors graph**
