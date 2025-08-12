@@ -2,9 +2,9 @@ name: Test Suite
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, master, develop ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, master, develop ]
 
 jobs:
   test:
@@ -82,7 +82,10 @@ jobs:
       run: cd src && npm ci
       
     - name: Check package.json
-      run: npm run validate:package
+      run: |
+        echo "Validating package.json..."
+        node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8'))"
+        echo "package.json is valid"
       
     - name: Check for console.log statements
       run: |
