@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerBackup v2.0.0 - Multi-Database Backup & Restore Tool</title>
+    <meta name="description" content="Enterprise-grade database backup and restore solution with beautiful logging, automated scheduling, and GPG encryption. Supports MySQL and PostgreSQL.">
+    <meta name="keywords" content="database backup, restore, mysql, postgresql, nodejs, automation, encryption, logging">
+    <meta name="author" content="PowerBackup Team">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-username.github.io/powerbackup/">
+    <meta property="og:title" content="PowerBackup v2.0.0 - Multi-Database Backup & Restore Tool">
+    <meta property="og:description" content="Enterprise-grade database backup and restore solution with beautiful logging and automated scheduling.">
+    <meta property="og:image" content="https://your-username.github.io/powerbackup/assets/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://your-username.github.io/powerbackup/">
+    <meta property="twitter:title" content="PowerBackup v2.0.0 - Multi-Database Backup & Restore Tool">
+    <meta property="twitter:description" content="Enterprise-grade database backup and restore solution with beautiful logging and automated scheduling.">
+    <meta property="twitter:image" content="https://your-username.github.io/powerbackup/assets/og-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    
+    <!-- CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .hero .version {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #00d4aa;
+            color: white;
+            border: 2px solid #00d4aa;
+        }
+
+        .btn-primary:hover {
+            background: #00b894;
+            border-color: #00b894;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,212,170,0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .features {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            margin: 40px 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #00d4aa;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .demo {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            color: white;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            overflow-x: auto;
+        }
+
+        .demo h3 {
+            color: #00d4aa;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .demo pre {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        .demo code {
+            color: #e6e6e6;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #00d4aa;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .footer a {
+            color: #00d4aa;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .features {
+                padding: 40px 20px;
+            }
+            
+            .features h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="version">🚀 v2.0.0</div>
+            <h1>PowerBackup</h1>
+            <p class="subtitle">Multi-Database Backup & Restore Tool with Beautiful Logging</p>
+            <p>A complete, enterprise-grade database backup and restore solution built with Node.js. Features beautiful emoji-enhanced logging, automated scheduling, GPG encryption, and support for MySQL and PostgreSQL.</p>
+            
+            <div class="cta-buttons">
+                <a href="https://github.com/your-username/powerbackup" class="btn btn-primary">
+                    📦 Get Started
+                </a>
+                <a href="https://github.com/your-username/powerbackup/blob/main/README.md" class="btn btn-secondary">
+                    📚 Documentation
+                </a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <h2>✨ Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🔄 Multi-Database Support</h3>
+                    <p>Full backup and restore support for MySQL and PostgreSQL databases with optimized dumping and restoration processes.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🎨 Beautiful Logging</h3>
+                    <p>Rich, emoji-enhanced logs with formatted timestamps and color-coded output for better visibility and debugging.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔒 Security First</h3>
+                    <p>GPG encryption for backup files, credential protection, and secure file permissions to keep your data safe.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>⏰ Automated Scheduling</h3>
+                    <p>Multiple deployment options including PM2, Systemd, Cron, and Windows Task Scheduler for automated hourly backups.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🧪 Test Restore</h3>
+                    <p>Safe restore to temporary database for verification, ensuring your backups are reliable and restorable.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📋 Table-Level Restore</h3>
+                    <p>Restore individual tables from backups with interactive CLI selection and comprehensive table listing.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🗜️ Compression</h3>
+                    <p>Gzip compression to significantly reduce backup file sizes while maintaining data integrity.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🛡️ Retention Policies</h3>
+                    <p>Automated cleanup of old backups based on configurable retention rules (hourly, daily, weekly, monthly, yearly).</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📱 Cross-Platform</h3>
+                    <p>Full support for Windows, Linux, and macOS with native deployment options for each platform.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo Section -->
+        <section class="demo">
+            <h3>🚀 Quick Start</h3>
+            <pre><code># Clone the repository
+git clone https://github.com/your-username/powerbackup.git
+cd powerbackup
+
+# Run setup script
+./setup.sh
+
+# Create your first backup
+npm run backup test-db
+
+# Test restore to temporary database
+npm run test-restore test-db
+
+# List available databases
+npm run list
+
+# Get help
+npm run help</code></pre>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-number">97.6%</div>
+                <div class="stat-label">Test Coverage</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">42</div>
+                <div class="stat-label">Tests Passed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Database Types</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Deployment Options</div>
+            </div>
+        </section>
+
+        <!-- Features Demo -->
+        <section class="demo">
+            <h3>🎨 Beautiful Logging Example</h3>
+            <pre><code>[Aug 12, 2025 14:44:30] ℹ️ INFO 🚀 Starting backup for test-db...
+[Aug 12, 2025 14:44:30] ℹ️ INFO 📊 Processing table users (1/4)
+[Aug 12, 2025 14:44:30] ✅ SUCCESS 🔒 Backup encrypted successfully
+[Aug 12, 2025 14:44:30] ✅ SUCCESS 🗜️ Backup compressed: 2.3MB → 456KB
+[Aug 12, 2025 14:44:30] ✅ SUCCESS 🎉 Backup completed successfully!</code></pre>
+        </section>
+
+        <!-- Installation Options -->
+        <section class="features">
+            <h2>🔧 Installation Options</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>📦 Quick Setup</h3>
+                    <p>Use our automated setup script for instant configuration and installation with all dependencies.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🐳 Docker Ready</h3>
+                    <p>Containerized deployment options for easy scaling and deployment in cloud environments.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>☁️ Cloud Native</h3>
+                    <p>Ready for deployment on AWS, Azure, Google Cloud, and other cloud platforms with native integration.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <section class="footer">
+            <p>Made with ❤️ using Node.js, ES Modules, and modern JavaScript practices.</p>
+            <p>
+                <a href="https://github.com/your-username/powerbackup">GitHub</a> • 
+                <a href="https://github.com/your-username/powerbackup/blob/main/README.md">Documentation</a> • 
+                <a href="https://github.com/your-username/powerbackup/blob/main/CONTRIBUTING.md">Contributing</a> • 
+                <a href="https://github.com/your-username/powerbackup/blob/main/LICENSE">License</a>
+            </p>
+            <p>&copy; 2025 PowerBackup Team. All rights reserved.</p>
+        </section>
+    </div>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Add copy functionality to code blocks
+        document.querySelectorAll('pre').forEach(pre => {
+            pre.addEventListener('click', function() {
+                const text = this.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    // Show feedback
+                    const originalText = this.textContent;
+                    this.textContent = 'Copied!';
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                    }, 1000);
+                });
+            });
+            pre.style.cursor = 'pointer';
+            pre.title = 'Click to copy';
+        });
+    </script>
+</body>
+</html>

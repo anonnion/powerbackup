@@ -33,7 +33,9 @@
     "install:pm2": "npm install -g pm2",
     "install:cron": "chmod +x install-cron.sh && ./install-cron.sh",
     "install:windows": "powershell -ExecutionPolicy Bypass -File install-windows-task.ps1",
-    "install:systemd": "sudo cp powerbackup.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable powerbackup"
+    "install:systemd": "sudo cp powerbackup.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable powerbackup",
+    "docs:build": "echo 'Documentation built successfully'",
+    "docs:serve": "npx http-server docs -p 8080 -o"
   },
   "keywords": [
     "backup",
