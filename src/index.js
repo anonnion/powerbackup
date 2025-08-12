@@ -25,7 +25,7 @@ export { compressFile } from './backup/compress.js';
 export { encryptFile } from './backup/encrypt.js';
 
 // Version information
-export const VERSION = '2.1.2';
+export const VERSION = '2.1.3';
 export const DESCRIPTION = 'Multi-Database Backup & Restore Tool with Beautiful Logging & Restore Locations';
 
 // Main function for programmatic use

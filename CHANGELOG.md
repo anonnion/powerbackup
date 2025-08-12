@@ -4,6 +4,14 @@ All notable changes to PowerBackup will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## \[2.1.3] - 2025-08-12
+
+### 🔧 Fixed
+
+* **README Update**: Force npm README update by bumping version to 2.1.3
+* **Version Consistency**: Updated all version references across all files
+* **Documentation**: Ensured all documentation reflects latest version
+
 ## \[2.1.2] - 2025-08-12
 
 ### 📚 Documentation
@@ -180,6 +188,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and 
 
 ## Version History
 
+* **v2.1.3**: README update and version consistency fixes.
 * **v2.1.2**: Documentation updates and download statistics.
 * **v2.1.1**: Security fixes and code quality improvements.
 * **v2.1.0**: Restore locations feature and CLI improvements.
