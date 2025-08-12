@@ -4,6 +4,7 @@
 
 [![CI/CD Pipeline](https://github.com/anonnion/powerbackup/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/ci.yml)
 [![Tests](https://github.com/anonnion/powerbackup/workflows/Tests/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/tests.yml)
+[![GitHub Pages](https://github.com/anonnion/powerbackup/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/pages.yml)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Test Coverage](https://img.shields.io/badge/test%20coverage-97.6%25-brightgreen.svg)](https://github.com/anonnion/powerbackup)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
