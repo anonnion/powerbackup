@@ -13,14 +13,16 @@ export { PowerBackupScheduler } from './scheduler.js';
 export { log } from './utils/logger.js';
 
 // Export utility functions
-export { encryptBackupFile, decryptBackupFile, compressBackupFile, decompressBackupFile } from './utils/file.js';
+export { decryptBackupFile, decompressBackupFile } from './utils/file.js';
 
 // Export backup functions
 export { createMySQLDump } from './backup/dump/mysql.js';
 export { createPostgresDump } from './backup/dump/postgres.js';
-export { testRestoreMysql, testRestorePostgres } from './backup/restore.js';
-export { actualRestoreMysql, actualRestorePostgres } from './backup/actual-restore.js';
+export { restoreBackup } from './backup/restore.js';
+export { actualRestore } from './backup/actual-restore.js';
 export { listBackupTables, restoreTable, interactiveTableRestore } from './backup/table-restore.js';
+export { compressFile } from './backup/compress.js';
+export { encryptFile } from './backup/encrypt.js';
 
 // Version information
 export const VERSION = '2.0.0';
