@@ -1,6 +1,6 @@
 {
   "name": "powerbackup",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Multi-Database Backup & Restore Tool with Beautiful Logging",
   "main": "src/index.js",
   "bin": {
@@ -39,7 +39,7 @@
     "install:systemd": "sudo cp powerbackup.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable powerbackup",
     "docs:build": "echo 'Documentation built successfully'",
     "docs:serve": "npx http-server docs -p 8080 -o",
-                    "test:global": "node -e \"require('os').platform() === 'win32' ? require('child_process').execSync('test-global-install.ps1', {stdio: 'inherit'}) : require('child_process').execSync('bash test-global-install.sh', {stdio: 'inherit'})\"",
+    "test:global": "node -e \"require('os').platform() === 'win32' ? require('child_process').execSync('test-global-install.ps1', {stdio: 'inherit'}) : require('child_process').execSync('bash test-global-install.sh', {stdio: 'inherit'})\"",
     "pack:test": "npm pack --dry-run",
     "pack:create": "npm pack"
   },
