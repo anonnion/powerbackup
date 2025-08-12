@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PowerBackup v2.0.0 - Enterprise Database Backup & Restore Solution</title>
-    <meta name="description" content="Enterprise-grade database backup and restore solution with advanced security, automated scheduling, and comprehensive monitoring. Supports MySQL and PostgreSQL with GPG encryption.">
+    <title>PowerBackup v2.1.1 - Enterprise Database Backup & Restore Solution</title>
+    <meta name="description" content="Enterprise-grade database backup and restore solution with advanced security, automated scheduling, and comprehensive monitoring. Supports MySQL and PostgreSQL with GPG encryption and restore locations.">
     <meta name="keywords" content="database backup, enterprise backup, mysql backup, postgresql backup, automated backup, gpg encryption, backup security, database restore, backup monitoring">
     <meta name="author" content="PowerBackup Enterprise Team">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://anonnion.github.io/powerbackup/">
-    <meta property="og:title" content="PowerBackup v2.0.0 - Enterprise Database Backup & Restore Solution">
+    <meta property="og:title" content="PowerBackup v2.1.1 - Enterprise Database Backup & Restore Solution">
     <meta property="og:description" content="Enterprise-grade database backup and restore solution with advanced security, automated scheduling, and comprehensive monitoring.">
     <meta property="og:image" content="https://anonnion.github.io/powerbackup/assets/og-image.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://anonnion.github.io/powerbackup/">
-    <meta property="twitter:title" content="PowerBackup v2.0.0 - Enterprise Database Backup & Restore Solution">
+    <meta property="twitter:title" content="PowerBackup v2.1.1 - Enterprise Database Backup & Restore Solution">
     <meta property="twitter:description" content="Enterprise-grade database backup and restore solution with advanced security, automated scheduling, and comprehensive monitoring.">
     <meta property="twitter:image" content="https://anonnion.github.io/powerbackup/assets/og-image.png">
 
@@ -365,6 +365,72 @@
             font-size: 1rem;
         }
 
+        /* Download Stats Section */
+        .download-stats {
+            padding: 60px 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .download-stats .section-title {
+            color: white;
+        }
+
+        .download-stats .section-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .download-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .download-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .download-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .download-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .download-card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .download-badge {
+            display: inline-block;
+            margin: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .download-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .download-badge img {
+            height: 28px;
+            border-radius: 6px;
+        }
+
         /* Enterprise Section */
         .enterprise {
             padding: 80px 0;
@@ -507,7 +573,7 @@
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <div class="version-badge">🚀 v2.0.0</div>
+                <div class="version-badge">🚀 v2.1.1</div>
                 <h1 class="hero-title">PowerBackup</h1>
                 <p class="hero-subtitle">Enterprise Database Backup & Restore Solution</p>
                 <p class="hero-description">
@@ -523,6 +589,12 @@
                     </a>
                     <a href="https://github.com/anonnion/powerbackup/actions/workflows/test.yml">
                         <img src="https://github.com/anonnion/powerbackup/workflows/Test%20Suite/badge.svg" alt="Test Suite">
+                    </a>
+                    <a href="https://www.npmjs.com/package/powerbackup">
+                        <img src="https://img.shields.io/npm/v/powerbackup.svg" alt="npm version">
+                    </a>
+                    <a href="https://www.npmjs.com/package/powerbackup">
+                        <img src="https://img.shields.io/npm/dm/powerbackup.svg" alt="npm downloads">
                     </a>
                     <a href="https://opensource.org/licenses/MIT">
                         <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
@@ -658,6 +730,80 @@ powerbackup --help</code></pre>
                 <div class="stat-card fade-in-up">
                     <div class="stat-number">4</div>
                     <div class="stat-label">Deployment Options</div>
+                </div>
+                <div class="stat-card fade-in-up">
+                    <div class="stat-number">
+                        <img src="https://img.shields.io/npm/dm/powerbackup.svg" alt="npm downloads" style="height: 2.5rem; width: auto;">
+                    </div>
+                    <div class="stat-label">Monthly Downloads</div>
+                </div>
+                <div class="stat-card fade-in-up">
+                    <div class="stat-number">
+                        <img src="https://img.shields.io/npm/dt/powerbackup.svg" alt="total downloads" style="height: 2.5rem; width: auto;">
+                    </div>
+                    <div class="stat-label">Total Downloads</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Statistics Section -->
+    <section class="download-stats">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Download Statistics</h2>
+                <p class="section-subtitle">
+                    Join thousands of developers and enterprises who trust PowerBackup for their database backup needs
+                </p>
+            </div>
+            
+            <div class="download-cards">
+                <div class="download-card fade-in-up">
+                    <h3>📦 NPM Downloads</h3>
+                    <p>PowerBackup is available on npm and has been downloaded by developers worldwide</p>
+                    <div class="download-badges">
+                        <a href="https://www.npmjs.com/package/powerbackup" class="download-badge">
+                            <img src="https://img.shields.io/npm/v/powerbackup.svg" alt="npm version">
+                        </a>
+                        <a href="https://www.npmjs.com/package/powerbackup" class="download-badge">
+                            <img src="https://img.shields.io/npm/dm/powerbackup.svg" alt="monthly downloads">
+                        </a>
+                        <a href="https://www.npmjs.com/package/powerbackup" class="download-badge">
+                            <img src="https://img.shields.io/npm/dt/powerbackup.svg" alt="total downloads">
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="download-card fade-in-up">
+                    <h3>🌟 GitHub Stars</h3>
+                    <p>Open source community support and continuous development</p>
+                    <div class="download-badges">
+                        <a href="https://github.com/anonnion/powerbackup" class="download-badge">
+                            <img src="https://img.shields.io/github/stars/anonnion/powerbackup.svg" alt="GitHub stars">
+                        </a>
+                        <a href="https://github.com/anonnion/powerbackup" class="download-badge">
+                            <img src="https://img.shields.io/github/forks/anonnion/powerbackup.svg" alt="GitHub forks">
+                        </a>
+                        <a href="https://github.com/anonnion/powerbackup" class="download-badge">
+                            <img src="https://img.shields.io/github/issues/anonnion/powerbackup.svg" alt="GitHub issues">
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="download-card fade-in-up">
+                    <h3>🔧 Installation Methods</h3>
+                    <p>Multiple installation options for different environments</p>
+                    <div class="download-badges">
+                        <a href="https://www.npmjs.com/package/powerbackup" class="download-badge">
+                            <img src="https://img.shields.io/badge/npm-install%20-g%20powerbackup-blue.svg" alt="npm install">
+                        </a>
+                        <a href="https://github.com/anonnion/powerbackup" class="download-badge">
+                            <img src="https://img.shields.io/badge/GitHub-clone%20repository-green.svg" alt="GitHub clone">
+                        </a>
+                        <a href="https://github.com/anonnion/powerbackup/releases" class="download-badge">
+                            <img src="https://img.shields.io/badge/Releases-latest%20version-orange.svg" alt="Releases">
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
