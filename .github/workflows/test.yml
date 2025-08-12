@@ -45,12 +45,15 @@ jobs:
         fi
       
     - name: Run unit tests
+      shell: bash
       run: npm run test:unit
       
     - name: Run integration tests
+      shell: bash
       run: npm run test:integration
       
     - name: Run all tests
+      shell: bash
       run: npm run test:all
       
     - name: Upload test results
@@ -106,6 +109,7 @@ jobs:
         fi
       
     - name: Check package.json
+      shell: bash
       run: |
         echo "Validating package.json..."
         node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8'))"
@@ -155,6 +159,7 @@ jobs:
         fi
       
     - name: Run security audit
+      shell: bash
       run: npm audit --audit-level=moderate
       
     - name: Check for known vulnerabilities
@@ -162,7 +167,7 @@ jobs:
       run: |
         echo "Checking for high severity vulnerabilities..."
         npm audit --audit-level=high || true
-        if npm audit --audit-level=high --audit-level=high 2>&1 | grep -q "found 0 vulnerabilities"; then
+        if npm audit --audit-level=high 2>&1 | grep -q "found 0 vulnerabilities"; then
           echo "✅ No high severity vulnerabilities found"
         else
           echo "❌ High severity vulnerabilities found"
@@ -211,6 +216,6 @@ jobs:
         node src/cli.js --help > /dev/null 2>&1 && echo "✅ CLI execution works" || echo "❌ CLI execution failed"
         
         # Test that config file exists and is valid JSON
-        node -e "import('fs').then(fs => fs.readFile('./src/config/config.json', 'utf8').then(data => { JSON.parse(data); console.log('✅ Config file is valid JSON'); })).catch(e => { console.error('❌ Config file validation failed:', e.message); process.exit(1); })"
+        node -e "import('fs').then(fs => fs.readFile('./src/config/config.json', { encoding: 'utf8' }).then(data => { JSON.parse(data); console.log('✅ Config file is valid JSON'); })).catch(e => { console.error('❌ Config file validation failed:', e.message); process.exit(1); })"
         
         echo "✅ Build verification completed"

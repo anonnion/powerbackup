@@ -40,12 +40,15 @@ jobs:
         fi
       
     - name: Run unit tests
+      shell: bash
       run: npm run test:unit
       
     - name: Run integration tests
+      shell: bash
       run: npm run test:integration
       
     - name: Run all tests
+      shell: bash
       run: npm run test:all
       
     - name: Upload test results
@@ -81,6 +84,7 @@ jobs:
         fi
       
     - name: Validate package.json
+      shell: bash
       run: |
         echo "Validating package.json..."
         node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8'))"
