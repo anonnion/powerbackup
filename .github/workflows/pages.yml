@@ -32,10 +32,10 @@ jobs:
         # Copy any additional assets if needed
         echo "Documentation built successfully"
         
-    - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main'
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs
-        cname: your-username.github.io
+         - name: Deploy to GitHub Pages
+       if: github.ref == 'refs/heads/main'
+       uses: peaceiris/actions-gh-pages@v3
+       with:
+         github_token: ${{ secrets.GITHUB_TOKEN }}
+         publish_dir: ./docs
+         force_orphan: true
