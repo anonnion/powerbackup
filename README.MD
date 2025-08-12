@@ -8,7 +8,7 @@
 [![Test Coverage](https://img.shields.io/badge/test%20coverage-97.6%25-brightgreen.svg)](https://github.com/anonnion/powerbackup)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-2.0.0-orange.svg)](package.json)
-
+ 
 > **The Beautiful Backup Experience** — PowerBackup isn’t just another backup script.
 > It’s a modern, developer-friendly tool for MySQL & PostgreSQL that mixes
 > *enterprise-grade reliability* with *emoji-powered, human-readable logging*.
