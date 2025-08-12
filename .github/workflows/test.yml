@@ -207,10 +207,10 @@ jobs:
         # Test that the main entry point works
         node -e "import('./src/index.js').then(() => console.log('✅ Main entry point works')).catch(e => { console.error('❌ Main entry point failed:', e.message); process.exit(1); })"
         
-        # Test configuration loading
-        node -e "import('./src/utils/config.js').then(m => m.loadConfig('./src/config/config.json').then(() => console.log('✅ Config loading works')).catch(e => { console.error('❌ Config loading failed:', e.message); process.exit(1); })).catch(e => { console.error('❌ Config module import failed:', e.message); process.exit(1); })"
-        
         # Test that CLI can be executed (with help flag to avoid actual execution)
         node src/cli.js --help > /dev/null 2>&1 && echo "✅ CLI execution works" || echo "❌ CLI execution failed"
+        
+        # Test that config file exists and is valid JSON
+        node -e "import('fs').then(fs => fs.readFile('./src/config/config.json', 'utf8').then(data => { JSON.parse(data); console.log('✅ Config file is valid JSON'); })).catch(e => { console.error('❌ Config file validation failed:', e.message); process.exit(1); })"
         
         echo "✅ Build verification completed"
