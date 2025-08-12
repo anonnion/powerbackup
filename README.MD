@@ -3,7 +3,7 @@
 **Backups you’ll actually enjoy running — secure, reliable, and beautiful.**
 
 [![CI/CD Pipeline](https://github.com/anonnion/powerbackup/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/ci.yml)
-[![Tests](https://github.com/anonnion/powerbackup/workflows/test/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/test.yml)
+[![Test Suite](https://github.com/anonnion/powerbackup/workflows/Test%20Suite/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/test.yml)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Test Coverage](https://img.shields.io/badge/test%20coverage-97.6%25-brightgreen.svg)](https://github.com/anonnion/powerbackup)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
