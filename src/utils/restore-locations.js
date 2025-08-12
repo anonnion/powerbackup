@@ -115,10 +115,10 @@ export class RestoreLocationsManager {
         
         log.info('📋 Configured restore locations:');
         for (const [name, dbTypes] of Object.entries(locations)) {
-            console.log(`  ${chalk.cyan(name)}:`);
+            log.info(`  ${chalk.cyan(name)}:`);
             for (const [dbType, url] of Object.entries(dbTypes)) {
                 const maskedUrl = this.maskUrl(url);
-                console.log(`    ${chalk.yellow(dbType)}: ${chalk.gray(maskedUrl)}`);
+                log.info(`    ${chalk.yellow(dbType)}: ${chalk.gray(maskedUrl)}`);
             }
         }
     }
