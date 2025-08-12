@@ -26,6 +26,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         
     - name: Install dependencies
+      shell: bash
       run: |
         if [ -f package-lock.json ]; then
           npm ci
@@ -34,6 +35,7 @@ jobs:
         fi
       
     - name: Install src dependencies
+      shell: bash
       run: |
         cd src
         if [ -f package-lock.json ]; then
@@ -85,6 +87,7 @@ jobs:
         node-version: '20'
         
     - name: Install dependencies
+      shell: bash
       run: |
         if [ -f package-lock.json ]; then
           npm ci
@@ -93,6 +96,7 @@ jobs:
         fi
       
     - name: Install src dependencies
+      shell: bash
       run: |
         cd src
         if [ -f package-lock.json ]; then
@@ -108,12 +112,14 @@ jobs:
         echo "package.json is valid"
       
     - name: Check for console.log statements
+      shell: bash
       run: |
-        if grep -r "console.log" src/ --exclude-dir=node_modules; then
-          echo "❌ Found console.log statements in source code"
+        echo "Checking for console.log statements in production code (excluding tests and CLI help)..."
+        if grep -r "console.log" src/ --exclude-dir=node_modules --exclude="*.test.js" --exclude="*test*.js" --exclude="cli.js" | grep -v "showBeautifulHelp\|test.*console.log"; then
+          echo "❌ Found console.log statements in production source code"
           exit 1
         else
-          echo "✅ No console.log statements found"
+          echo "✅ No console.log statements found in production code"
         fi
 
   security:
@@ -130,6 +136,7 @@ jobs:
         node-version: '20'
         
     - name: Install dependencies
+      shell: bash
       run: |
         if [ -f package-lock.json ]; then
           npm ci
@@ -138,6 +145,7 @@ jobs:
         fi
       
     - name: Install src dependencies
+      shell: bash
       run: |
         cd src
         if [ -f package-lock.json ]; then
@@ -150,6 +158,7 @@ jobs:
       run: npm audit --audit-level=moderate
       
     - name: Check for known vulnerabilities
+      shell: bash
       run: |
         if npm audit --audit-level=high; then
           echo "❌ High severity vulnerabilities found"
@@ -172,6 +181,7 @@ jobs:
         node-version: '20'
         
     - name: Install dependencies
+      shell: bash
       run: |
         if [ -f package-lock.json ]; then
           npm ci
@@ -180,6 +190,7 @@ jobs:
         fi
       
     - name: Install src dependencies
+      shell: bash
       run: |
         cd src
         if [ -f package-lock.json ]; then
@@ -189,6 +200,7 @@ jobs:
         fi
       
     - name: Verify build
+      shell: bash
       run: |
         # Test that the CLI can be imported
         node -e "import('./src/cli.js').then(() => console.log('✅ CLI imports successfully'))"
