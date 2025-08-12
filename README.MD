@@ -4,6 +4,8 @@
 
 [![CI/CD Pipeline](https://github.com/anonnion/powerbackup/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/ci.yml)
 [![Test Suite](https://github.com/anonnion/powerbackup/workflows/Test%20Suite/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/test.yml)
+[![npm version](https://img.shields.io/npm/v/powerbackup.svg)](https://www.npmjs.com/package/powerbackup)
+[![npm downloads](https://img.shields.io/npm/dm/powerbackup.svg)](https://www.npmjs.com/package/powerbackup)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Test Coverage](https://img.shields.io/badge/test%20coverage-97.6%25-brightgreen.svg)](https://github.com/anonnion/powerbackup)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -52,14 +54,38 @@ From daily automated backups to one-off table restores, PowerBackup gives you **
 
 ## 🚀 Quick Start
 
-### Install & Run
+### Global Installation (Recommended)
 
 ```bash
-git clone https://github.com/your-org/powerbackup.git
+# Install globally
+npm install -g powerbackup
+
+# Initialize PowerBackup (automatically detects your OS and runs appropriate setup)
+powerbackup init
+
+# Add your first database
+powerbackup add-db
+
+# Create your first backup
+powerbackup create-now mydatabase
+
+# Test restore safely
+powerbackup test-restore mydatabase
+```
+
+**💡 Smart Setup:** The `powerbackup init` command automatically detects your operating system and runs the appropriate setup script:
+- **Windows**: Runs `setup.bat` for Windows-specific configuration
+- **Linux/macOS**: Runs `setup.sh` for Unix-based systems
+- **Fallback**: If setup scripts aren't available, runs basic initialization
+
+### Local Development
+
+```bash
+git clone https://github.com/anonnion/powerbackup.git
 cd powerbackup
 
 # Install dependencies
-npm run install-deps
+npm install
 
 # Show beautiful help
 npm run help
@@ -69,13 +95,13 @@ npm run help
 
 ```bash
 # List your databases
-npm run list
+powerbackup list-dbs
 
 # Make a backup
-npm run backup mydatabase
+powerbackup create-now mydatabase
 
 # Safely test-restore it
-npm run test-restore mydatabase
+powerbackup test-restore mydatabase
 ```
 
 ---
@@ -84,14 +110,15 @@ npm run test-restore mydatabase
 
 | Command                     | What it does                       |
 | --------------------------- | ---------------------------------- |
-| `npm run help`              | Show full help with emoji goodness |
-| `npm run list`              | See configured databases           |
-| `npm run add`               | Add a new DB interactively         |
-| `npm run backup <db>`       | Backup instantly                   |
-| `npm run test-restore <db>` | Safe restore to temp DB            |
-| `npm run restore <db>`      | Actual restore (destructive)       |
-| `npm run tables <db>`       | List tables in backup              |
-| `npm run interactive <db>`  | Pick specific tables to restore    |
+| `powerbackup`               | Show beautiful help with emoji goodness |
+| `powerbackup init`          | Initialize PowerBackup configuration |
+| `powerbackup list-dbs`      | See configured databases           |
+| `powerbackup add-db`        | Add a new DB interactively         |
+| `powerbackup create-now <db>` | Backup instantly                   |
+| `powerbackup test-restore <db>` | Safe restore to temp DB            |
+| `powerbackup restore <db>`  | Actual restore (destructive)       |
+| `powerbackup list-tables <db>` | List tables in backup              |
+| `powerbackup interactive-restore <db>` | Pick specific tables to restore    |
 
 For all commands, options, and advanced usage, scroll down to [Command Reference](#-command-reference).
 
@@ -158,10 +185,56 @@ For all commands, options, and advanced usage, scroll down to [Command Reference
 
 ### Install
 
+#### Global Installation (Recommended)
+
 ```bash
-git clone https://github.com/your-org/powerbackup.git
+# Install globally
+npm install -g powerbackup
+
+# Initialize PowerBackup
+powerbackup init
+```
+
+#### Local Development
+
+```bash
+# Clone the repository
+git clone https://github.com/anonnion/powerbackup.git
 cd powerbackup
-npm run install-deps
+
+# Install dependencies
+npm install
+
+# Or install globally for system-wide access
+npm install -g .
+```
+
+#### Windows-Specific Setup
+
+```powershell
+# Option 1: Automated Setup (Recommended)
+# Run PowerShell as Administrator
+.\setup.ps1
+
+# Option 2: Batch File Setup (Alternative)
+# Run Command Prompt as Administrator
+.\setup.bat
+
+# Option 3: Manual Setup
+# Install Node.js (if not already installed)
+# Download from https://nodejs.org/
+
+# Install PowerBackup globally
+npm install -g powerbackup
+
+# Initialize PowerBackup
+powerbackup init
+
+# Add your databases
+powerbackup add-db
+
+# Test the installation
+powerbackup --help
 ```
 
 ### Configure
@@ -213,24 +286,24 @@ export LOG_LEVEL="debug"
 ### 🎯 **Quick Commands**
 | Command | Description | Example |
 |---------|-------------|---------|
-| `npm run help` | Show beautiful help guide | `npm run help` |
-| `npm run list` | List configured databases | `npm run list` |
-| `npm run add` | Add new database interactively | `npm run add` |
-| `npm run backup <db>` | Create backup immediately | `npm run backup myapp` |
-| `npm run test-restore <db>` | Test restore (safe) | `npm run test-restore myapp` |
-| `npm run restore <db>` | Restore to target (destructive) | `npm run restore myapp` |
-| `npm run tables <db>` | List tables in backup | `npm run tables myapp` |
-| `npm run interactive <db>` | Interactive table restore | `npm run interactive myapp` |
-| `npm run backups <db>` | List available backups | `npm run backups myapp` |
+| `powerbackup` | Show beautiful help guide | `powerbackup` |
+| `powerbackup list-dbs` | List configured databases | `powerbackup list-dbs` |
+| `powerbackup add-db` | Add new database interactively | `powerbackup add-db` |
+| `powerbackup create-now <db>` | Create backup immediately | `powerbackup create-now myapp` |
+| `powerbackup test-restore <db>` | Test restore (safe) | `powerbackup test-restore myapp` |
+| `powerbackup restore <db>` | Restore to target (destructive) | `powerbackup restore myapp` |
+| `powerbackup list-tables <db>` | List tables in backup | `powerbackup list-tables myapp` |
+| `powerbackup interactive-restore <db>` | Interactive table restore | `powerbackup interactive-restore myapp` |
+| `powerbackup list-backups <db>` | List available backups | `powerbackup list-backups myapp` |
 
 ### 🔧 **Advanced Commands**
 | Command | Description | Options |
 |---------|-------------|---------|
-| `npm start create-now <db>` | Create backup | `--schema-only` |
-| `npm start test-restore <db>` | Test restore | `--target <db>` |
-| `npm start restore <db>` | Actual restore | `--target <db>` |
-| `npm start restore-table <db> <table>` | Restore table | `--target <db>` |
-| `npm start list-backups <db>` | List backups | `--tier <tier>` |
+| `powerbackup create-now <db>` | Create backup | `--schema-only` |
+| `powerbackup test-restore <db>` | Test restore | `--target <db>` |
+| `powerbackup restore <db>` | Actual restore | `--target <db>` |
+| `powerbackup restore-table <db> <table>` | Restore table | `--target <db>` |
+| `powerbackup list-backups <db>` | List backups | `--tier <tier>` |
 
 ### 🧪 **Testing Commands**
 | Command | Description |
@@ -337,48 +410,48 @@ chmod 600 src/config/passphrase
 
 ```bash
 # 1. List databases
-npm run list
+powerbackup list-dbs
 
 # 2. Create backup
-npm run backup myapp
+powerbackup create-now myapp
 
 # 3. Test restore (safe)
-npm run test-restore myapp
+powerbackup test-restore myapp
 
 # 4. List tables
-npm run tables myapp
+powerbackup list-tables myapp
 
 # 5. Restore specific table
-npm run restore-table myapp users
+powerbackup restore-table myapp users
 
 # 6. Interactive restore
-npm run interactive myapp
+powerbackup interactive-restore myapp
 ```
 
 ### Advanced Scenarios
 
 ```bash
 # Schema-only backup
-npm start create-now myapp --schema-only
+powerbackup create-now myapp --schema-only
 
 # Restore to different database
-npm start restore myapp --target myapp-restored
+powerbackup restore myapp --target myapp-restored
 
 # List backups by tier
-npm start list-backups myapp --tier daily
+powerbackup list-backups myapp --tier daily
 
 # Restore specific table to different database
-npm start restore-table myapp users --target myapp-test
+powerbackup restore-table myapp users --target myapp-test
 ```
 
 ### Automation
 
 ```bash
 # Add to crontab for automated backups
-0 */6 * * * cd /path/to/powerbackup && npm run backup myapp
+0 */6 * * * powerbackup create-now myapp
 
 # Test restore at 3 AM daily
-0 3 * * * cd /path/to/powerbackup && npm run test-restore myapp
+0 3 * * * powerbackup test-restore myapp
 ```
 
 
@@ -442,6 +515,26 @@ npm run install:windows
 
 # Or run as Administrator
 powershell -ExecutionPolicy Bypass -File install-windows-task.ps1
+```
+
+### 🪟 **Windows: Manual Setup**
+
+```powershell
+# Install PowerBackup globally
+npm install -g powerbackup
+
+# Initialize PowerBackup
+powerbackup init
+
+# Add your databases
+powerbackup add-db
+
+# Create a scheduled task manually
+schtasks /create /tn "PowerBackup" /tr "powerbackup scheduler:once" /sc hourly /ru "SYSTEM"
+
+# Or create a PowerShell script for manual execution
+New-Item -Path "C:\Scripts\powerbackup-run.ps1" -ItemType File -Force
+Add-Content -Path "C:\Scripts\powerbackup-run.ps1" -Value "powerbackup scheduler:once"
 ```
 
 ### 📋 **Retention Rules**

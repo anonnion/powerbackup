@@ -1,8 +1,11 @@
 {
   "name": "powerbackup",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Multi-Database Backup & Restore Tool with Beautiful Logging",
   "main": "src/index.js",
+  "bin": {
+    "powerbackup": "src/cli.js"
+  },
   "type": "module",
   "scripts": {
     "start": "node src/cli.js",
@@ -35,7 +38,10 @@
     "install:windows": "powershell -ExecutionPolicy Bypass -File install-windows-task.ps1",
     "install:systemd": "sudo cp powerbackup.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable powerbackup",
     "docs:build": "echo 'Documentation built successfully'",
-    "docs:serve": "npx http-server docs -p 8080 -o"
+    "docs:serve": "npx http-server docs -p 8080 -o",
+                    "test:global": "node -e \"require('os').platform() === 'win32' ? require('child_process').execSync('test-global-install.ps1', {stdio: 'inherit'}) : require('child_process').execSync('bash test-global-install.sh', {stdio: 'inherit'})\"",
+    "pack:test": "npm pack --dry-run",
+    "pack:create": "npm pack"
   },
   "keywords": [
     "backup",
@@ -50,5 +56,53 @@
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anonnion/powerbackup.git"
+  },
+  "bugs": {
+    "url": "https://github.com/anonnion/powerbackup/issues"
+  },
+  "homepage": "https://github.com/anonnion/powerbackup#readme",
+  "files": [
+    "src/",
+    "docs/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "DEPLOYMENT.md",
+    "ecosystem.config.js",
+    "powerbackup.service",
+    "install-cron.sh",
+    "install-windows-task.ps1",
+    "setup.sh",
+    "setup.bat",
+    "test-global-install.sh",
+    "test-global-install.ps1"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "preferGlobal": true,
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.500.0",
+    "adm-zip": "^0.5.16",
+    "commander": "^12.0.0",
+    "inquirer": "^9.3.7",
+    "openpgp": "^6.2.0",
+    "pg": "^8.11.3",
+    "mysql2": "^3.9.0",
+    "tmp-promise": "^3.0.3",
+    "winston": "^3.13.0",
+    "date-fns": "^3.6.0",
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1",
+    "cli-table3": "^0.6.3",
+    "figlet": "^1.7.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0"
   }
 }

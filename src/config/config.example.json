@@ -4,6 +4,20 @@
     "symmetric_passphrase_file": "./src/config/passphrase",
     "recipients": []
   },
+  "restore_locations": {
+    "development": {
+      "mysql": "mysql://dev_user:dev_pass@localhost:3306/dev_db",
+      "postgres": "postgresql://dev_user:dev_pass@localhost:5432/dev_db"
+    },
+    "staging": {
+      "mysql": "mysql://staging_user:staging_pass@staging-server:3306/staging_db",
+      "postgres": "postgresql://staging_user:staging_pass@staging-server:5432/staging_db"
+    },
+    "testing": {
+      "mysql": "mysql://test_user:test_pass@localhost:3306/test_db",
+      "postgres": "postgresql://test_user:test_pass@localhost:5432/test_db"
+    }
+  },
   "databases": [
     {
       "name": "example-mysql",

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // CLI entrypoint for PowerBackup
 import { Command } from 'commander';
 import inquirer from 'inquirer';
@@ -5,17 +7,18 @@ import fs from 'fs/promises';
 import path from 'path';
 import { BackupManager } from './backup/manager.js';
 import { log } from './utils/logger.js';
+import { RestoreLocationsManager } from './utils/restore-locations.js';
 import chalk from 'chalk';
 import figlet from 'figlet';
 
 // Display beautiful banner
 function showBanner() {
     console.log(chalk.cyan(figlet.textSync('PowerBackup', { font: 'Standard' })));
-    console.log(chalk.gray('Multi-Database Backup & Restore Tool v2.0.0\n'));
+    console.log(chalk.gray('Multi-Database Backup & Restore Tool v2.1.0\n'));
 }
 
 const program = new Command();
-program.version('2.0.0').description('Multi-DB backup & rotation tool with beautiful logging').option('-c, --config <path>', 'Config file path', './src/config/config.json');
+program.version('2.1.0').description('Multi-DB backup & rotation tool with beautiful logging & restore locations').option('-c, --config <path>', 'Config file path', './src/config/config.json');
 
 program.command('list-dbs').description('List configured databases').action(listDbs);
 program.command('add-db').description('Add a new database').action(addDb);
@@ -26,6 +29,13 @@ program.command('list-tables <name>').description('List tables in latest backup'
 program.command('restore-table <name> <table>').description('Restore specific table from latest backup').option('--target <database>', 'Target database name (defaults to original name)').action(restoreTable);
 program.command('interactive-restore <name>').description('Interactive table restore from latest backup').option('--target <database>', 'Target database name (defaults to original name)').action(interactiveRestore);
 program.command('list-backups <name>').description('List backups for database').option('--tier <tier>', 'Backup tier', 'hourly').action(listBackups);
+program.command('init').description('Initialize PowerBackup configuration').action(initPowerBackup);
+
+// Restore location management commands
+program.command('list-restore-locations').description('List configured restore locations').action(listRestoreLocations);
+program.command('add-restore-location').description('Add a new restore location interactively').action(addRestoreLocation);
+program.command('remove-restore-location').description('Remove a restore location interactively').action(removeRestoreLocation);
+program.command('manage-restore-locations').description('Interactive restore location management').action(manageRestoreLocations);
 
 async function loadConfig() {
     try {
@@ -118,8 +128,43 @@ async function testRestore(name) {
         const sorted = await Promise.all(files.filter(f => !f.endsWith('.meta.json')).map(async f => ({ name: f, time: (await fs.stat(path.join(backupDir, f))).mtime.getTime() })));
         sorted.sort((a, b) => b.time - a.time);
         const latestBackup = path.join(backupDir, sorted[0].name);
+
+        // Handle restore location selection for test restore
+        let targetUrl = null;
+        
+        const useRestoreLocation = await inquirer.prompt([
+            {
+                type: 'confirm',
+                name: 'useLocation',
+                message: 'Would you like to test restore to a configured restore location?',
+                default: false
+            }
+        ]);
+        
+        if (useRestoreLocation.useLocation) {
+            const configPath = path.resolve(process.cwd(), program.opts().config);
+            const locationManager = new RestoreLocationsManager(configPath);
+            
+            try {
+                const selectedLocation = await locationManager.selectRestoreLocation(db.type);
+                targetUrl = selectedLocation.url;
+                log.info(`Using restore location: ${chalk.cyan(selectedLocation.name)}`);
+            } catch (error) {
+                log.warn(`Could not select restore location: ${error.message}`);
+                log.info('Proceeding with original database configuration');
+            }
+        }
+
         const manager = new BackupManager(config);
-        await manager.testRestore(db, latestBackup);
+        
+        if (targetUrl) {
+            // Create a temporary db config with the target URL
+            const targetDbConfig = { ...db, url: targetUrl };
+            await manager.testRestore(targetDbConfig, latestBackup);
+        } else {
+            await manager.testRestore(db, latestBackup);
+        }
+        
         log.success('Test restore completed successfully');
     } catch (e) {
         log.error('Error:', e.message);
@@ -140,8 +185,47 @@ async function actualRestore(name, options) {
         sorted.sort((a, b) => b.time - a.time);
         const latestBackup = path.join(backupDir, sorted[0].name);
 
+        // Handle restore location selection
+        let targetUrl = null;
+        let targetDbName = options.target || name;
+        
+        if (!options.target) {
+            // Ask user if they want to use a restore location
+            const useRestoreLocation = await inquirer.prompt([
+                {
+                    type: 'confirm',
+                    name: 'useLocation',
+                    message: 'Would you like to restore to a configured restore location?',
+                    default: false
+                }
+            ]);
+            
+            if (useRestoreLocation.useLocation) {
+                const configPath = path.resolve(process.cwd(), program.opts().config);
+                const locationManager = new RestoreLocationsManager(configPath);
+                
+                try {
+                    const selectedLocation = await locationManager.selectRestoreLocation(db.type);
+                    targetUrl = selectedLocation.url;
+                    targetDbName = selectedLocation.name;
+                    log.info(`Using restore location: ${chalk.cyan(selectedLocation.name)}`);
+                } catch (error) {
+                    log.warn(`Could not select restore location: ${error.message}`);
+                    log.info('Proceeding with original database configuration');
+                }
+            }
+        }
+
         const manager = new BackupManager(config);
-        await manager.actualRestore(db, latestBackup, options.target || name);
+        
+        if (targetUrl) {
+            // Create a temporary db config with the target URL
+            const targetDbConfig = { ...db, url: targetUrl, name: targetDbName };
+            await manager.actualRestore(targetDbConfig, latestBackup, targetDbName);
+        } else {
+            await manager.actualRestore(db, latestBackup, targetDbName);
+        }
+        
         log.success('Actual restore completed successfully');
     } catch (e) {
         log.error('Error:', e.message);
@@ -263,17 +347,205 @@ async function runHourlyBackups() {
     }
 }
 
+async function initPowerBackup() {
+    try {
+        console.log(chalk.yellow('🚀 Initializing PowerBackup...\n'));
+        
+        // Detect operating system and run appropriate setup script
+        const os = process.platform;
+        const { execSync } = await import('child_process');
+        
+        console.log(chalk.cyan('🔧 Detecting operating system...'));
+        console.log(chalk.gray(`Platform: ${os}`));
+        
+        let setupScript = '';
+        let setupCommand = '';
+        
+        if (os === 'win32') {
+            setupScript = 'setup.bat';
+            setupCommand = 'setup.bat';
+            console.log(chalk.yellow('🪟 Windows detected - running Windows setup script...'));
+        } else {
+            setupScript = 'setup.sh';
+            setupCommand = './setup.sh';
+            console.log(chalk.yellow('🐧 Linux/macOS detected - running Unix setup script...'));
+        }
+        
+        // Check if setup script exists
+        console.log(chalk.gray(`Checking for setup script: ${setupScript}`));
+        try {
+            await fs.access(setupScript);
+            console.log(chalk.green(`✅ Setup script found: ${setupScript}`));
+        } catch (e) {
+            console.log(chalk.red(`❌ Setup script not found: ${setupScript}`));
+            console.log(chalk.yellow('💡 Running basic initialization instead...'));
+            
+            // Fall back to basic initialization
+            await basicInit();
+            return;
+        }
+        
+        console.log(chalk.cyan('⏳ Running setup script...'));
+        console.log(chalk.gray('This may take a few minutes. Please wait...\n'));
+        
+        try {
+            // Run the setup script
+            execSync(setupCommand, { 
+                stdio: 'inherit',
+                cwd: process.cwd()
+            });
+            
+            console.log(chalk.green('\n✅ Setup completed successfully!\n'));
+            console.log(chalk.yellow('Next steps:'));
+            console.log(`  1. ${chalk.green('powerbackup add-db')} - Add your first database`);
+            console.log(`  2. ${chalk.green('powerbackup create-now <name>')} - Create your first backup`);
+            console.log(`  3. ${chalk.green('powerbackup --help')} - View all available commands\n`);
+            
+        } catch (e) {
+            console.log(chalk.red(`❌ Setup script failed: ${e.message}`));
+            console.log(chalk.yellow('💡 Running basic initialization instead...'));
+            
+            // Fall back to basic initialization
+            await basicInit();
+        }
+        
+    } catch (e) {
+        log.error('Initialization failed:', e.message);
+        process.exit(1);
+    }
+}
+
+async function basicInit() {
+    try {
+        console.log(chalk.cyan('🔧 Running basic initialization...\n'));
+        
+        // Check if config already exists
+        const configPath = path.resolve(process.cwd(), program.opts().config);
+        try {
+            await fs.access(configPath);
+            const overwrite = await inquirer.prompt([
+                {
+                    type: 'confirm',
+                    name: 'overwrite',
+                    message: 'Configuration file already exists. Overwrite?',
+                    default: false
+                }
+            ]);
+            
+            if (!overwrite.overwrite) {
+                log.info('Initialization cancelled.');
+                return;
+            }
+        } catch (e) {
+            // Config doesn't exist, continue
+        }
+        
+        // Create default config
+        const defaultConfig = {
+            backup_directory: "./backups",
+            databases: {},
+            encryption: {
+                enabled: true,
+                symmetric_passphrase_file: "./src/config/passphrase",
+                keyring_path: "./src/config/keyring.gpg"
+            },
+            compression: {
+                enabled: true,
+                algorithm: "gzip"
+            },
+            logging: {
+                level: "info",
+                file: "./logs/powerbackup.log",
+                max_size: "10m",
+                max_files: 5
+            }
+        };
+        
+        // Create directories
+        const dirs = [
+            './backups',
+            './logs',
+            './src/config'
+        ];
+        
+        for (const dir of dirs) {
+            try {
+                await fs.mkdir(dir, { recursive: true });
+                log.success(`Created directory: ${chalk.gray(dir)}`);
+            } catch (e) {
+                log.warn(`Directory already exists: ${chalk.gray(dir)}`);
+            }
+        }
+        
+        // Save config
+        await fs.writeFile(configPath, JSON.stringify(defaultConfig, null, 2));
+        log.success(`Configuration saved to: ${chalk.gray(configPath)}`);
+        
+        console.log(chalk.green('\n✅ Basic initialization completed!\n'));
+        console.log(chalk.yellow('Next steps:'));
+        console.log(`  1. ${chalk.green('powerbackup add-db')} - Add your first database`);
+        console.log(`  2. ${chalk.green('powerbackup create-now <name>')} - Create your first backup`);
+        console.log(`  3. ${chalk.green('powerbackup --help')} - View all available commands\n`);
+        
+    } catch (e) {
+        log.error('Basic initialization failed:', e.message);
+        process.exit(1);
+    }
+}
+
+// Restore location management functions
+async function listRestoreLocations() {
+    try {
+        const configPath = path.resolve(process.cwd(), program.opts().config);
+        const manager = new RestoreLocationsManager(configPath);
+        await manager.listRestoreLocations();
+    } catch (e) {
+        log.error('Error:', e.message);
+        process.exit(1);
+    }
+}
+
+async function addRestoreLocation() {
+    try {
+        const configPath = path.resolve(process.cwd(), program.opts().config);
+        const manager = new RestoreLocationsManager(configPath);
+        await manager.interactiveAddRestoreLocation();
+    } catch (e) {
+        log.error('Error:', e.message);
+        process.exit(1);
+    }
+}
+
+async function removeRestoreLocation() {
+    try {
+        const configPath = path.resolve(process.cwd(), program.opts().config);
+        const manager = new RestoreLocationsManager(configPath);
+        await manager.interactiveRemoveRestoreLocation();
+    } catch (e) {
+        log.error('Error:', e.message);
+        process.exit(1);
+    }
+}
+
+async function manageRestoreLocations() {
+    try {
+        const configPath = path.resolve(process.cwd(), program.opts().config);
+        const manager = new RestoreLocationsManager(configPath);
+        await manager.manageRestoreLocations();
+    } catch (e) {
+        log.error('Error:', e.message);
+        process.exit(1);
+    }
+}
+
 // Parse arguments and run
 async function main() {
     try {
-        // Show banner for interactive commands
-        if (process.argv.length > 2) {
-            showBanner();
-        }
+        // Show banner only once at the beginning
+        showBanner();
         
         // If no command specified, show beautiful help
         if (process.argv.length === 2) {
-            showBanner();
             showBeautifulHelp();
             return;
         }
@@ -287,35 +559,41 @@ async function main() {
 
 // Beautiful help display
 function showBeautifulHelp() {
-    console.log(chalk.cyan('\n🚀 PowerBackup v2.0.0 - Quick Start Guide\n'));
+    console.log(chalk.cyan('\n🚀 PowerBackup v2.1.0 - Quick Start Guide\n'));
     
     console.log(chalk.yellow('📋 Database Management:'));
-    console.log(`  ${chalk.green('npm start list-dbs')}     - List all configured databases`);
-    console.log(`  ${chalk.green('npm start add-db')}       - Add a new database interactively\n`);
+    console.log(`  ${chalk.green('powerbackup list-dbs')}     - List all configured databases`);
+    console.log(`  ${chalk.green('powerbackup add-db')}       - Add a new database interactively`);
+    console.log(`  ${chalk.green('powerbackup init')}         - Initialize PowerBackup configuration\n`);
+    
+    console.log(chalk.yellow('📍 Restore Location Management:'));
+    console.log(`  ${chalk.green('powerbackup list-restore-locations')}     - List configured restore locations`);
+    console.log(`  ${chalk.green('powerbackup add-restore-location')}       - Add a new restore location`);
+    console.log(`  ${chalk.green('powerbackup manage-restore-locations')}   - Interactive restore location management\n`);
     
     console.log(chalk.yellow('💾 Backup Operations:'));
-    console.log(`  ${chalk.green('npm start create-now <db>')}  - Create backup immediately`);
-    console.log(`  ${chalk.green('npm start list-backups <db>')} - List available backups\n`);
+    console.log(`  ${chalk.green('powerbackup create-now <db>')}  - Create backup immediately`);
+    console.log(`  ${chalk.green('powerbackup list-backups <db>')} - List available backups\n`);
     
     console.log(chalk.yellow('🔄 Restore Operations:'));
-    console.log(`  ${chalk.green('npm start test-restore <db>')}     - Test restore (safe, temporary)`);
-    console.log(`  ${chalk.green('npm start restore <db>')}   - Restore to target database\n`);
+    console.log(`  ${chalk.green('powerbackup test-restore <db>')}     - Test restore (safe, temporary)`);
+    console.log(`  ${chalk.green('powerbackup restore <db>')}   - Restore to target database\n`);
     
     console.log(chalk.yellow('🎯 Table-Level Operations:'));
-    console.log(`  ${chalk.green('npm start list-tables <db>')}      - List tables in latest backup`);
-    console.log(`  ${chalk.green('npm start restore-table <db> <table>')} - Restore specific table`);
-    console.log(`  ${chalk.green('npm start interactive-restore <db>')}   - Interactive table selection\n`);
+    console.log(`  ${chalk.green('powerbackup list-tables <db>')}      - List tables in latest backup`);
+    console.log(`  ${chalk.green('powerbackup restore-table <db> <table>')} - Restore specific table`);
+    console.log(`  ${chalk.green('powerbackup interactive-restore <db>')}   - Interactive table selection\n`);
     
     console.log(chalk.yellow('🔧 Options:'));
     console.log(`  ${chalk.gray('--target <database>')} - Specify target database for restore operations`);
     console.log(`  ${chalk.gray('--tier <tier>')}       - Specify backup tier (hourly, daily, weekly, monthly, yearly)\n`);
     
     console.log(chalk.cyan('💡 Examples:'));
-    console.log(`  ${chalk.gray('npm start create-now myapp')}`);
-    console.log(`  ${chalk.gray('npm start test-restore myapp')}`);
-    console.log(`  ${chalk.gray('npm start restore myapp')}`);
-    console.log(`  ${chalk.gray('npm start restore-table myapp users')}`);
-    console.log(`  ${chalk.gray('npm start interactive-restore myapp')}\n`);
+    console.log(`  ${chalk.gray('powerbackup create-now myapp')}`);
+    console.log(`  ${chalk.gray('powerbackup test-restore myapp')}`);
+    console.log(`  ${chalk.gray('powerbackup restore myapp')}`);
+    console.log(`  ${chalk.gray('powerbackup restore-table myapp users')}`);
+    console.log(`  ${chalk.gray('powerbackup interactive-restore myapp')}\n`);
     
     console.log(chalk.magenta('🎨 Features:'));
     console.log(`  ✨ Beautiful colored logging with emojis`);
@@ -326,7 +604,7 @@ function showBeautifulHelp() {
     console.log(`  ☁️ AWS S3 integration\n`);
     
     console.log(chalk.blue('📖 For detailed help:'));
-    console.log(`  ${chalk.gray('npm start --help')} - Show all available commands\n`);
+    console.log(`  ${chalk.gray('powerbackup --help')} - Show all available commands\n`);
     
     console.log(chalk.green('🌟 PowerBackup - The Beautiful Backup Experience!\n'));
 }

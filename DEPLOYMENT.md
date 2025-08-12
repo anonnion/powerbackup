@@ -1,6 +1,6 @@
 # 🔋💾 PowerBackup Deployment Guide
 
-This guide walks you through different ways to run PowerBackup with automatic hourly backups and pruning. Choose the method that best fits your setup.
+This guide walks you through deploying PowerBackup globally and setting up automatic hourly backups with pruning. PowerBackup is designed for Linux environments but works cross-platform.
 
 ## 📋 Deployment Methods at a Glance
 
@@ -12,29 +12,42 @@ This guide walks you through different ways to run PowerBackup with automatic ho
 | **Windows Task Scheduler** | Windows        | Built-in                                     | Windows-only              | Windows servers                 |
 | **Node.js Scheduler**      | Cross-platform | No extra dependencies                        | Process must stay running | Development, quick testing      |
 
-## 🎯 Recommended: PM2 for Production
+## 🎯 Recommended: Global Installation with PM2
 
 ```bash
+# Install PowerBackup globally
+npm install -g powerbackup
+
+# Initialize PowerBackup
+powerbackup init
+
+# Add your databases
+powerbackup add-db
+
 # Install PM2 globally
-npm run install:pm2
+npm install -g pm2
 
-# Create logs directory
-mkdir -p logs
+# Start scheduler with PM2
+pm2 start powerbackup -- scheduler:daemon
 
-# Start scheduler
-npm run pm2:start
+# Save PM2 configuration
+pm2 save
+pm2 startup
 
 # View logs
-npm run pm2:logs
+pm2 logs powerbackup
 ```
 
-**Pro Tip:** Run `pm2 startup` and `pm2 save` to make PowerBackup start on boot.
+**Pro Tip:** This setup provides process management, monitoring, and auto-restart capabilities.
 
 ---
 
-## 🐧 Linux/Unix: Systemd
+## 🐧 Linux/Unix: Systemd Service
 
 ```bash
+# Install PowerBackup globally
+sudo npm install -g powerbackup
+
 # Create a dedicated user
 sudo useradd -r -s /bin/false powerbackup
 
@@ -42,13 +55,17 @@ sudo useradd -r -s /bin/false powerbackup
 sudo mkdir -p /opt/powerbackup
 sudo chown powerbackup:powerbackup /opt/powerbackup
 
-# Copy files
-sudo cp -r . /opt/powerbackup/
+# Initialize PowerBackup as the service user
+sudo -u powerbackup powerbackup init
 
-# Install and start service
-npm run install:systemd
-sudo systemctl start powerbackup
+# Install systemd service
+sudo cp powerbackup.service /etc/systemd/system/
+sudo systemctl daemon-reload
 sudo systemctl enable powerbackup
+sudo systemctl start powerbackup
+
+# Check status
+sudo systemctl status powerbackup
 ```
 
 ---
@@ -56,35 +73,79 @@ sudo systemctl enable powerbackup
 ## ⏰ Linux/Unix: Cron Jobs
 
 ```bash
-# Make install script executable
-chmod +x install-cron.sh
+# Install PowerBackup globally
+sudo npm install -g powerbackup
 
-# Install cron job
-npm run install:cron
+# Initialize PowerBackup
+powerbackup init
+
+# Add your databases
+powerbackup add-db
+
+# Add to crontab (run every hour)
+crontab -e
 ```
 
-Or manually add to `crontab -e`:
+Add this line to your crontab:
 
 ```bash
-0 * * * * cd /path/to/powerbackup && node src/scheduler.js src/config/config.json once >> logs/cron.log 2>&1
+0 * * * * powerbackup scheduler:once >> ~/powerbackup.log 2>&1
+```
+
+Or use the provided script:
+
+```bash
+chmod +x install-cron.sh
+./install-cron.sh
 ```
 
 ---
 
 ## 🪟 Windows: Task Scheduler
 
+### Automated Setup
+
 ```powershell
 # Run PowerShell as Administrator
-cd C:\path\to\powerbackup
 npm run install:windows
 ```
 
-Or create a basic task in Task Scheduler to run every hour with:
+### Manual Setup
 
+```powershell
+# Install PowerBackup globally
+npm install -g powerbackup
+
+# Initialize PowerBackup
+powerbackup init
+
+# Add your databases
+powerbackup add-db
+
+# Create a scheduled task manually
+schtasks /create /tn "PowerBackup" /tr "powerbackup scheduler:once" /sc hourly /ru "SYSTEM"
+
+# Or create a PowerShell script for manual execution
+New-Item -Path "C:\Scripts\powerbackup-run.ps1" -ItemType File -Force
+Add-Content -Path "C:\Scripts\powerbackup-run.ps1" -Value "powerbackup scheduler:once"
 ```
-Program: node.exe
-Arguments: scheduler.js src/config/config.json once
-Start in: C:\path\to\powerbackup
+
+### Using the Setup Script
+
+```powershell
+# Run the Windows setup script (PowerShell)
+.\setup.ps1
+
+# With options
+.\setup.ps1 -SkipTests -SkipGPG
+```
+
+```cmd
+# Run the Windows setup script (Batch)
+.\setup.bat
+
+# With options
+.\setup.bat --skip-tests --skip-gpg
 ```
 
 ---
@@ -189,11 +250,11 @@ tail -f logs/cron.log
 
 ```bash
 # Run backup once
-npm run backup myapp
+powerbackup create-now myapp
 
 # Test restore
-npm run test-restore myapp
+powerbackup test-restore myapp
 
 # Prune old backups
-npm run scheduler:once
+powerbackup scheduler:once
 ```

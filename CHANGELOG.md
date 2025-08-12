@@ -4,6 +4,56 @@ All notable changes to PowerBackup will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## \[2.1.0] - 2025-08-12
+
+### 🚀 Added
+
+* **Restore Locations**: Pre-configure database URLs for different environments (dev, staging, prod)
+* **Interactive Restore Location Management**: Add, remove, and manage restore locations through CLI
+* **Enhanced Restore Workflow**: Choose restore locations during test and actual restore operations
+* **Restore Location Validation**: URL validation and masking for security
+* **Flexible Environment Support**: Support multiple database types per restore location
+
+### 🔧 Changed
+
+* **CLI Banner**: Fixed duplication issue - banner now shows only once per command
+* **Version Update**: Bumped to v2.1.0 to reflect new features
+* **Configuration Structure**: Added `restore_locations` section to config files
+* **Help System**: Updated to include new restore location commands
+
+### 🐛 Fixed
+
+* **Banner Duplication**: Eliminated duplicate banner display in CLI commands
+* **Code Organization**: Improved code structure and readability
+
+### 📚 Documentation
+
+* **Updated README**: Added comprehensive restore locations documentation
+* **Configuration Examples**: Added restore locations examples to config files
+* **Command Reference**: Updated to include new restore location management commands
+
+## \[2.0.1] - 2025-08-12
+
+### 🔧 Fixed
+
+* **Dependencies**: Updated all packages to latest stable versions
+* **OpenPGP**: Upgraded from deprecated v5.x to v6.2.0
+* **Commander**: Updated to v12.0.0 for better CLI handling
+* **Inquirer**: Updated to v9.3.7 for improved prompts
+* **MySQL2**: Updated to v3.9.0 for better performance
+* **Winston**: Updated to v3.13.0 for enhanced logging
+* **Date-fns**: Updated to v3.6.0 for modern date handling
+* **Ora**: Updated to v8.0.1 for better spinners
+* **AWS SDK**: Updated to v3.500.0 for latest features
+* **ESLint**: Updated to v9.0.0 for modern linting
+
+### 🚀 Improved
+
+* **Global Installation**: Fixed dependency resolution for global npm package
+* **Package Structure**: Moved dependencies to root package.json
+* **Installation Process**: Simplified with single `npm install` command
+* **Windows Support**: Added PowerShell setup script (`setup.ps1`) for Windows users
+
 ## \[2.0.0] - 2025-08-12
 
 ### 🚀 Added
@@ -18,8 +68,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and 
 * **Retention Policies**: Automated cleanup of outdated backups.
 * **Test Restore**: Safe restore to temporary database for verification.
 * **Comprehensive Testing**: Unit and integration tests with 90%+ coverage.
+* **Global NPM Package**: Install globally with `npm install -g powerbackup`.
 * **Multiple Deployment Options**: PM2, Systemd, Cron, Windows Task Scheduler.
-* **Setup Automation**: Install and configure with a single script.
+* **Setup Automation**: Initialize with `powerbackup init`.
 * **Security Features**: Secure file permissions and credential protection.
 
 ### 🔧 Changed
@@ -88,6 +139,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and 
 
 ## Version History
 
+* **v2.1.0**: Restore locations feature and CLI improvements.
+* **v2.0.1**: Dependency updates and global package fixes.
 * **v2.0.0**: Node.js rewrite with logging, automation, and multi-DB support.
 * **v1.0.0**: Initial Python-based release.
 
@@ -110,7 +163,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and 
 3. **Commands**:
 
    * Old: `powerbackup backup <db>`
-   * New: `npm run backup <db>`
+   * New: `powerbackup create-now <db>`
 4. **Scheduling**:
 
    * Old: Manual cron setup.

@@ -15,7 +15,7 @@ Thanks for thinking about contributing to **PowerBackup**! We want this process 
 3. **Install** dependencies:
 
    ```bash
-   ./setup.sh
+   npm install
    ```
 4. **Create** a branch:
 
@@ -55,8 +55,6 @@ Thanks for thinking about contributing to **PowerBackup**! We want this process 
 ```bash
 git clone https://github.com/your-username/powerbackup.git
 cd powerbackup
-chmod +x setup.sh
-./setup.sh
 npm install
 ```
 

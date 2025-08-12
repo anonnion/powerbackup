@@ -611,24 +611,23 @@
         <div class="container">
             <div class="demo-content">
                 <h3>🚀 Quick Start Guide</h3>
-                <pre class="copyable"><code># Clone the repository
-git clone https://github.com/anonnion/powerbackup.git
-cd powerbackup
+                <pre class="copyable"><code># Install globally
+npm install -g powerbackup
 
-# Run automated setup
-./setup.sh
+# Initialize PowerBackup
+powerbackup init
+
+# Add your first database
+powerbackup add-db
 
 # Create your first backup
-npm run backup test-db
+powerbackup create-now mydatabase
 
-# Verify backup integrity
-npm run test-restore test-db
-
-# List configured databases
-npm run list
+# Test restore safely
+powerbackup test-restore mydatabase
 
 # Get comprehensive help
-npm run help</code></pre>
+powerbackup --help</code></pre>
             </div>
         </div>
     </section>
