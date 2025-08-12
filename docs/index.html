@@ -3,30 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PowerBackup v2.0.0 - Multi-Database Backup & Restore Tool</title>
-    <meta name="description" content="Enterprise-grade database backup and restore solution with beautiful logging, automated scheduling, and GPG encryption. Supports MySQL and PostgreSQL.">
-    <meta name="keywords" content="database backup, restore, mysql, postgresql, nodejs, automation, encryption, logging">
-    <meta name="author" content="PowerBackup Team">
+    <title>PowerBackup v2.0.0 - Enterprise Database Backup & Restore Solution</title>
+    <meta name="description" content="Enterprise-grade database backup and restore solution with advanced security, automated scheduling, and comprehensive monitoring. Supports MySQL and PostgreSQL with GPG encryption.">
+    <meta name="keywords" content="database backup, enterprise backup, mysql backup, postgresql backup, automated backup, gpg encryption, backup security, database restore, backup monitoring">
+    <meta name="author" content="PowerBackup Enterprise Team">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://anonnion.github.io/powerbackup/">
-    <meta property="og:title" content="PowerBackup v2.0.0 - Multi-Database Backup & Restore Tool">
-    <meta property="og:description" content="Enterprise-grade database backup and restore solution with beautiful logging and automated scheduling.">
+    <meta property="og:title" content="PowerBackup v2.0.0 - Enterprise Database Backup & Restore Solution">
+    <meta property="og:description" content="Enterprise-grade database backup and restore solution with advanced security, automated scheduling, and comprehensive monitoring.">
     <meta property="og:image" content="https://anonnion.github.io/powerbackup/assets/og-image.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://anonnion.github.io/powerbackup/">
-    <meta property="twitter:title" content="PowerBackup v2.0.0 - Multi-Database Backup & Restore Tool">
-    <meta property="twitter:description" content="Enterprise-grade database backup and restore solution with beautiful logging and automated scheduling.">
+    <meta property="twitter:title" content="PowerBackup v2.0.0 - Enterprise Database Backup & Restore Solution">
+    <meta property="twitter:description" content="Enterprise-grade database backup and restore solution with advanced security, automated scheduling, and comprehensive monitoring.">
     <meta property="twitter:image" content="https://anonnion.github.io/powerbackup/assets/og-image.png">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <!-- CSS -->
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary-color: #10b981;
+            --secondary-dark: #059669;
+            --accent-color: #f59e0b;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-light: #9ca3af;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-dark: #111827;
+            --border-color: #e5e7eb;
+            --border-dark: #374151;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -34,241 +60,197 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            color: #fff;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            min-height: 100vh;
-            position: relative;
+            color: var(--text-primary);
+            background: var(--bg-primary);
             overflow-x: hidden;
-        }
-
-        /* Dynamic background based on scroll */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, 
-                #667eea 0%, 
-                #764ba2 25%, 
-                #f093fb 50%, 
-                #f5576c 75%, 
-                #4facfe 100%);
-            z-index: -2;
-            transition: all 0.3s ease;
-        }
-
-        /* Animated gradient overlay */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, 
-                rgba(255,255,255,0.1) 0%, 
-                rgba(255,255,255,0.05) 50%, 
-                rgba(0,0,0,0.1) 100%);
-            z-index: -1;
-            animation: gradientShift 8s ease-in-out infinite;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.7; }
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
+            padding: 0 20px;
         }
 
-        .hero {
-            text-align: center;
-            padding: 120px 20px 80px;
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
-            position: relative;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
-            50% { transform: translateX(-50%) scale(1.2); opacity: 0.6; }
-        }
-
-        .hero h1 {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            font-weight: 800;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            background: linear-gradient(45deg, #fff, #00d4aa, #fff);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: textShine 3s ease-in-out infinite;
-        }
-
-        @keyframes textShine {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .hero .subtitle {
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            opacity: 0.95;
-            font-weight: 300;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-
-        .hero .version {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            padding: 12px 24px;
-            border-radius: 25px;
-            display: inline-block;
-            font-weight: 600;
-            margin-bottom: 40px;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-
-        .badges {
-            margin: 40px 0;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .badges a {
-            text-decoration: none;
-            transition: transform 0.3s ease;
-        }
-
-        .badges a:hover {
-            transform: translateY(-3px);
-        }
-
-        .badges img {
-            height: 25px;
-            border-radius: 5px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 25px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 80px;
-        }
-
-        .btn {
-            padding: 18px 35px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            padding: 120px 0 80px;
             position: relative;
             overflow: hidden;
         }
 
-        .btn::before {
+        .header::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
         }
 
-        .btn:hover::before {
-            left: 100%;
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .version-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+            font-weight: 400;
+            margin-bottom: 32px;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+            margin-bottom: 48px;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        /* Status Badges */
+        .badges {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+        }
+
+        .badges a {
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .badges a:hover {
+            transform: translateY(-2px);
+        }
+
+        .badges img {
+            height: 24px;
+            border-radius: 4px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* CTA Buttons */
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid transparent;
         }
 
         .btn-primary {
-            background: linear-gradient(45deg, #00d4aa, #00b894);
+            background: var(--secondary-color);
             color: white;
-            border: none;
-            box-shadow: 0 8px 25px rgba(0,212,170,0.3);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(0,212,170,0.4);
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .btn-secondary {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            border: 2px solid rgba(255,255,255,0.3);
+            border-color: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(10px);
         }
 
         .btn-secondary:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: rgba(255,255,255,0.5);
-            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
         }
 
+        /* Features Section */
         .features {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 80px 50px;
-            margin: 60px 0;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 25px 80px rgba(0,0,0,0.2);
+            padding: 80px 0;
+            background: var(--bg-secondary);
         }
 
-        .features h2 {
+        .section-header {
             text-align: center;
-            font-size: 3rem;
-            margin-bottom: 60px;
-            color: white;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 64px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
+            gap: 32px;
         }
 
         .feature-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(15px);
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.4s ease;
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
@@ -278,154 +260,179 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #00d4aa, #00b894, #00d4aa);
-            transform: scaleX(0);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+            transform: scaleY(0);
             transition: transform 0.3s ease;
         }
 
         .feature-card:hover::before {
-            transform: scaleX(1);
+            transform: scaleY(1);
         }
 
         .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            background: rgba(255,255,255,0.15);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
         }
 
         .feature-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: white;
-            font-weight: 600;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
         }
 
         .feature-card p {
-            color: rgba(255,255,255,0.9);
+            color: var(--text-secondary);
             line-height: 1.7;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
+        /* Demo Section */
         .demo {
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 50px;
-            margin: 60px 0;
+            padding: 80px 0;
+            background: var(--bg-dark);
             color: white;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            overflow-x: auto;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+        }
+
+        .demo-content {
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .demo h3 {
-            color: #00d4aa;
-            margin-bottom: 25px;
+            color: var(--secondary-color);
+            margin-bottom: 24px;
             font-size: 1.5rem;
             font-weight: 600;
         }
 
         .demo pre {
-            background: rgba(0,0,0,0.6);
-            padding: 25px;
-            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 24px;
+            border-radius: 8px;
             overflow-x: auto;
             margin: 0;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid var(--border-dark);
+            font-family: 'JetBrains Mono', 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
 
         .demo code {
-            color: #e6e6e6;
-            font-size: 0.95rem;
+            color: #e5e7eb;
         }
 
+        /* Stats Section */
         .stats {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin: 60px 0;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
         }
 
         .stat-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(15px);
-            padding: 40px;
-            border-radius: 20px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
+            padding: 32px 24px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255,255,255,0.15);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
         }
 
         .stat-number {
             font-size: 3rem;
-            font-weight: 800;
-            color: #00d4aa;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 900;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            line-height: 1;
         }
 
         .stat-label {
-            color: rgba(255,255,255,0.9);
+            color: var(--text-secondary);
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
-        .footer {
+        /* Enterprise Section */
+        .enterprise {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1f2937 100%);
+            color: white;
+        }
+
+        .enterprise-content {
+            max-width: 800px;
+            margin: 0 auto;
             text-align: center;
-            padding: 80px 20px 40px;
-            color: rgba(255,255,255,0.8);
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%);
-            margin-top: 80px;
-            border-radius: 25px 25px 0 0;
-            position: relative;
         }
 
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        .enterprise h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .enterprise p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer p {
+            margin-bottom: 16px;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .footer a {
-            color: #00d4aa;
+            color: var(--secondary-color);
             text-decoration: none;
-            transition: color 0.3s ease;
+            transition: color 0.2s ease;
         }
 
         .footer a:hover {
-            color: #00b894;
+            color: var(--secondary-light);
             text-decoration: underline;
         }
 
-        /* Scroll-based darkening effect */
-        .dark-section {
-            background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.8) 100%);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 60px 40px;
-            margin: 40px 0;
-            border: 1px solid rgba(255,255,255,0.1);
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero .subtitle {
-                font-size: 1.3rem;
+            .container {
+                padding: 0 16px;
             }
             
             .cta-buttons {
@@ -433,256 +440,274 @@
                 align-items: center;
             }
             
-            .features {
-                padding: 40px 20px;
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
             }
             
-            .features h2 {
-                font-size: 2.2rem;
-            }
-
             .features-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 16px;
+            }
         }
 
-        /* Floating particles effect */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .particle {
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Copy functionality */
+        .copyable {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .copyable::after {
+            content: 'Click to copy';
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255,255,255,0.5);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
+            top: -30px;
+            right: 0;
+            background: var(--text-primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
-            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        .copyable:hover::after {
+            opacity: 1;
         }
     </style>
 </head>
 <body>
-    <!-- Floating particles -->
-    <div class="particles" id="particles"></div>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="version-badge">🚀 v2.0.0</div>
+                <h1 class="hero-title">PowerBackup</h1>
+                <p class="hero-subtitle">Enterprise Database Backup & Restore Solution</p>
+                <p class="hero-description">
+                    Secure, reliable, and automated database backup solution designed for enterprise environments. 
+                    Features advanced security with GPG encryption, comprehensive monitoring, and seamless integration 
+                    with MySQL and PostgreSQL databases.
+                </p>
+                
+                <!-- Status Badges -->
+                <div class="badges">
+                    <a href="https://github.com/anonnion/powerbackup/actions/workflows/ci.yml">
+                        <img src="https://github.com/anonnion/powerbackup/workflows/CI%2FCD%20Pipeline/badge.svg" alt="CI/CD Pipeline">
+                    </a>
+                    <a href="https://github.com/anonnion/powerbackup/actions/workflows/test.yml">
+                        <img src="https://github.com/anonnion/powerbackup/workflows/Test%20Suite/badge.svg" alt="Test Suite">
+                    </a>
+                    <a href="https://github.com/anonnion/powerbackup/actions/workflows/pages.yml">
+                        <img src="https://github.com/anonnion/powerbackup/workflows/Deploy%20to%20GitHub%20Pages/badge.svg" alt="GitHub Pages">
+                    </a>
+                    <a href="https://opensource.org/licenses/MIT">
+                        <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
+                    </a>
+                    <a href="https://nodejs.org/">
+                        <img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node.js">
+                    </a>
+                    <a href="https://github.com/anonnion/powerbackup">
+                        <img src="https://img.shields.io/badge/test%20coverage-97.6%25-brightgreen.svg" alt="Test Coverage">
+                    </a>
+                </div>
+                
+                <div class="cta-buttons">
+                    <a href="https://github.com/anonnion/powerbackup" class="btn btn-primary">
+                        📦 Get Started
+                    </a>
+                    <a href="https://github.com/anonnion/powerbackup/blob/main/README.md" class="btn btn-secondary">
+                        📚 Documentation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
 
-    <div class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="version">🚀 v2.0.0</div>
-            <h1>PowerBackup</h1>
-            <p class="subtitle">Multi-Database Backup & Restore Tool with Beautiful Logging</p>
-            <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">A complete, enterprise-grade database backup and restore solution built with Node.js. Features beautiful emoji-enhanced logging, automated scheduling, GPG encryption, and support for MySQL and PostgreSQL.</p>
-            
-            <!-- Status Badges -->
-            <div class="badges">
-                <a href="https://github.com/anonnion/powerbackup/actions/workflows/ci.yml">
-                    <img src="https://github.com/anonnion/powerbackup/workflows/CI%2FCD%20Pipeline/badge.svg" alt="CI/CD Pipeline">
-                </a>
-                <a href="https://github.com/anonnion/powerbackup/actions/workflows/tests.yml">
-                    <img src="https://github.com/anonnion/powerbackup/workflows/Tests/badge.svg" alt="Tests">
-                </a>
-                <a href="https://github.com/anonnion/powerbackup/actions/workflows/pages.yml">
-                    <img src="https://github.com/anonnion/powerbackup/workflows/Deploy%20to%20GitHub%20Pages/badge.svg" alt="GitHub Pages">
-                </a>
-                <a href="https://opensource.org/licenses/MIT">
-                    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
-                </a>
-                <a href="https://nodejs.org/">
-                    <img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node.js">
-                </a>
-                <a href="https://github.com/anonnion/powerbackup">
-                    <img src="https://img.shields.io/badge/test%20coverage-97.6%25-brightgreen.svg" alt="Test Coverage">
-                </a>
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Enterprise-Grade Features</h2>
+                <p class="section-subtitle">
+                    Comprehensive backup and restore capabilities designed for mission-critical environments
+                </p>
             </div>
             
-            <div class="cta-buttons">
-                <a href="https://github.com/anonnion/powerbackup" class="btn btn-primary">
-                    📦 Get Started
-                </a>
-                <a href="https://github.com/anonnion/powerbackup/blob/main/README.md" class="btn btn-secondary">
-                    📚 Documentation
-                </a>
-            </div>
-        </section>
-
-        <!-- Features Section -->
-        <section class="features">
-            <h2>✨ Key Features</h2>
             <div class="features-grid">
-                <div class="feature-card">
+                <div class="feature-card fade-in-up">
+                    <h3>🔒 Advanced Security</h3>
+                    <p>GPG encryption with both symmetric and asymmetric key support. Secure credential management and audit logging for compliance requirements.</p>
+                </div>
+                
+                <div class="feature-card fade-in-up">
                     <h3>🔄 Multi-Database Support</h3>
-                    <p>Full backup and restore support for MySQL and PostgreSQL databases with optimized dumping and restoration processes.</p>
+                    <p>Native support for MySQL and PostgreSQL with optimized dumping and restoration processes. Extensible architecture for additional database types.</p>
                 </div>
                 
-                <div class="feature-card">
-                    <h3>🎨 Beautiful Logging</h3>
-                    <p>Rich, emoji-enhanced logs with formatted timestamps and color-coded output for better visibility and debugging.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🔒 Security First</h3>
-                    <p>GPG encryption for backup files, credential protection, and secure file permissions to keep your data safe.</p>
-                </div>
-                
-                <div class="feature-card">
+                <div class="feature-card fade-in-up">
                     <h3>⏰ Automated Scheduling</h3>
-                    <p>Multiple deployment options including PM2, Systemd, Cron, and Windows Task Scheduler for automated hourly backups.</p>
+                    <p>Enterprise-grade scheduling with PM2, Systemd, Cron, and Windows Task Scheduler. Configurable retention policies and automated pruning.</p>
                 </div>
                 
-                <div class="feature-card">
-                    <h3>🧪 Test Restore</h3>
-                    <p>Safe restore to temporary database for verification, ensuring your backups are reliable and restorable.</p>
+                <div class="feature-card fade-in-up">
+                    <h3>🧪 Safe Testing</h3>
+                    <p>Test restores to temporary databases for verification without affecting production data. Comprehensive data integrity checks and validation.</p>
                 </div>
                 
-                <div class="feature-card">
-                    <h3>📋 Table-Level Restore</h3>
-                    <p>Restore individual tables from backups with interactive CLI selection and comprehensive table listing.</p>
+                <div class="feature-card fade-in-up">
+                    <h3>📊 Granular Control</h3>
+                    <p>Table-level restores with interactive selection. Schema-only backups for quick snapshots and selective data recovery.</p>
                 </div>
                 
-                <div class="feature-card">
-                    <h3>🗜️ Compression</h3>
-                    <p>Gzip compression to significantly reduce backup file sizes while maintaining data integrity.</p>
+                <div class="feature-card fade-in-up">
+                    <h3>🗜️ Optimized Performance</h3>
+                    <p>Gzip compression for efficient storage. Incremental backup support and intelligent retention management to minimize storage costs.</p>
                 </div>
                 
-                <div class="feature-card">
-                    <h3>🛡️ Retention Policies</h3>
-                    <p>Automated cleanup of old backups based on configurable retention rules (hourly, daily, weekly, monthly, yearly).</p>
+                <div class="feature-card fade-in-up">
+                    <h3>☁️ Cloud Integration</h3>
+                    <p>Direct integration with AWS S3 for cloud storage. Support for multiple retention tiers and automated backup rotation.</p>
                 </div>
                 
-                <div class="feature-card">
-                    <h3>📱 Cross-Platform</h3>
-                    <p>Full support for Windows, Linux, and macOS with native deployment options for each platform.</p>
+                <div class="feature-card fade-in-up">
+                    <h3>📈 Comprehensive Monitoring</h3>
+                    <p>Beautiful, structured logging with emoji-enhanced output. Real-time progress indicators and detailed audit trails.</p>
+                </div>
+                
+                <div class="feature-card fade-in-up">
+                    <h3>🛡️ Production Ready</h3>
+                    <p>97.6% test coverage with comprehensive unit and integration tests. Robust error handling and graceful degradation.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Demo Section -->
-        <section class="demo">
-            <h3>🚀 Quick Start</h3>
-            <pre><code># Clone the repository
+    <!-- Demo Section -->
+    <section class="demo">
+        <div class="container">
+            <div class="demo-content">
+                <h3>🚀 Quick Start Guide</h3>
+                <pre class="copyable"><code># Clone the repository
 git clone https://github.com/anonnion/powerbackup.git
 cd powerbackup
 
-# Run setup script
+# Run automated setup
 ./setup.sh
 
 # Create your first backup
 npm run backup test-db
 
-# Test restore to temporary database
+# Verify backup integrity
 npm run test-restore test-db
 
-# List available databases
+# List configured databases
 npm run list
 
-# Get help
+# Get comprehensive help
 npm run help</code></pre>
-        </section>
-
-        <!-- Stats Section -->
-        <section class="stats">
-            <div class="stat-card">
-                <div class="stat-number">97.6%</div>
-                <div class="stat-label">Test Coverage</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-number">42</div>
-                <div class="stat-label">Tests Passed</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">2</div>
-                <div class="stat-label">Database Types</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">4</div>
-                <div class="stat-label">Deployment Options</div>
-            </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Features Demo -->
-        <section class="demo">
-            <h3>🎨 Beautiful Logging Example</h3>
-            <pre><code>[Aug 12, 2025 14:44:30] ℹ️ INFO 🚀 Starting backup for test-db...
-[Aug 12, 2025 14:44:30] ℹ️ INFO 📊 Processing table users (1/4)
-[Aug 12, 2025 14:44:30] ✅ SUCCESS 🔒 Backup encrypted successfully
-[Aug 12, 2025 14:44:30] ✅ SUCCESS 🗜️ Backup compressed: 2.3MB → 456KB
-[Aug 12, 2025 14:44:30] ✅ SUCCESS 🎉 Backup completed successfully!</code></pre>
-        </section>
-
-        <!-- Installation Options -->
-        <section class="dark-section">
-            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 50px; color: white;">🔧 Installation Options</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>📦 Quick Setup</h3>
-                    <p>Use our automated setup script for instant configuration and installation with all dependencies.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🐳 Docker Ready</h3>
-                    <p>Containerized deployment options for easy scaling and deployment in cloud environments.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>☁️ Cloud Native</h3>
-                    <p>Ready for deployment on AWS, Azure, Google Cloud, and other cloud platforms with native integration.</p>
-                </div>
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Performance Metrics</h2>
+                <p class="section-subtitle">
+                    Proven reliability and performance in enterprise environments
+                </p>
             </div>
-        </section>
-
-        <!-- Footer -->
-        <section class="footer">
-            <p style="font-size: 1.2rem; margin-bottom: 20px;">Made with ❤️ using Node.js, ES Modules, and modern JavaScript practices.</p>
-            <p style="margin-bottom: 20px;">
-                <a href="https://github.com/anonnion/powerbackup">GitHub</a> • 
-                <a href="https://github.com/anonnion/powerbackup/blob/main/README.md">Documentation</a> • 
-                <a href="https://github.com/anonnion/powerbackup/blob/main/CONTRIBUTING.md">Contributing</a> • 
-                <a href="https://github.com/anonnion/powerbackup/blob/main/LICENSE">License</a>
-            </p>
-            <p>&copy; 2025 PowerBackup Team. All rights reserved.</p>
-        </section>
-    </div>
-
-    <!-- JavaScript for interactivity -->
-    <script>
-        // Create floating particles
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 20;
             
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
+            <div class="stats-grid">
+                <div class="stat-card fade-in-up">
+                    <div class="stat-number">97.6%</div>
+                    <div class="stat-label">Test Coverage</div>
+                </div>
+                <div class="stat-card fade-in-up">
+                    <div class="stat-number">42</div>
+                    <div class="stat-label">Tests Passed</div>
+                </div>
+                <div class="stat-card fade-in-up">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Database Types</div>
+                </div>
+                <div class="stat-card fade-in-up">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Deployment Options</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
+    <!-- Enterprise Section -->
+    <section class="enterprise">
+        <div class="container">
+            <div class="enterprise-content">
+                <h2>Built for Enterprise</h2>
+                <p>
+                    PowerBackup is designed to meet the rigorous demands of enterprise environments. 
+                    With comprehensive security features, automated scheduling, and extensive monitoring capabilities, 
+                    it provides the reliability and scalability needed for mission-critical database operations.
+                </p>
+                <div class="cta-buttons">
+                    <a href="https://github.com/anonnion/powerbackup/blob/main/DEPLOYMENT.md" class="btn btn-primary">
+                        📋 Deployment Guide
+                    </a>
+                    <a href="https://github.com/anonnion/powerbackup/blob/main/CONTRIBUTING.md" class="btn btn-secondary">
+                        🤝 Contribute
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        // Add animation on scroll
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="https://github.com/anonnion/powerbackup">GitHub Repository</a>
+                    <a href="https://github.com/anonnion/powerbackup/blob/main/README.md">Documentation</a>
+                    <a href="https://github.com/anonnion/powerbackup/blob/main/CONTRIBUTING.md">Contributing</a>
+                    <a href="https://github.com/anonnion/powerbackup/blob/main/LICENSE">License</a>
+                </div>
+                <p>Built with enterprise-grade reliability and modern development practices</p>
+                <p>&copy; 2025 PowerBackup Enterprise Team. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Intersection Observer for animations
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -697,16 +722,16 @@ npm run help</code></pre>
             });
         }, observerOptions);
 
-        // Observe feature cards
-        document.querySelectorAll('.feature-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            observer.observe(card);
+        // Observe elements for animation
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
         });
 
-        // Add copy functionality to code blocks
-        document.querySelectorAll('pre').forEach(pre => {
+        // Copy functionality for code blocks
+        document.querySelectorAll('.copyable').forEach(pre => {
             pre.addEventListener('click', function() {
                 const text = this.textContent;
                 navigator.clipboard.writeText(text).then(() => {
@@ -718,22 +743,21 @@ npm run help</code></pre>
                     }, 1000);
                 });
             });
-            pre.style.cursor = 'pointer';
-            pre.title = 'Click to copy';
         });
 
-        // Dynamic background based on scroll
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const maxScroll = document.body.scrollHeight - window.innerHeight;
-            const scrollProgress = scrolled / maxScroll;
-            
-            // Gradually darken the background as user scrolls
-            document.body.style.setProperty('--scroll-progress', scrollProgress);
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
         });
-
-        // Initialize particles
-        createParticles();
     </script>
 </body>
 </html>

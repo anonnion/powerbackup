@@ -1,0 +1,159 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 21.x]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install src dependencies
+      run: cd src && npm ci
+      
+    - name: Run unit tests
+      run: npm run test:unit
+      
+    - name: Run integration tests
+      run: npm run test:integration
+      
+    - name: Run all tests
+      run: npm run test:all
+      
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-${{ matrix.os }}-${{ matrix.node-version }}
+        path: |
+          test-results/
+          coverage/
+        retention-days: 7
+        
+    - name: Upload logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: logs-${{ matrix.os }}-${{ matrix.node-version }}
+        path: |
+          logs/
+          *.log
+        retention-days: 7
+
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install src dependencies
+      run: cd src && npm ci
+      
+    - name: Check package.json
+      run: npm run validate:package
+      
+    - name: Check for console.log statements
+      run: |
+        if grep -r "console.log" src/ --exclude-dir=node_modules; then
+          echo "❌ Found console.log statements in source code"
+          exit 1
+        else
+          echo "✅ No console.log statements found"
+        fi
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install src dependencies
+      run: cd src && npm ci
+      
+    - name: Run security audit
+      run: npm audit --audit-level=moderate
+      
+    - name: Check for known vulnerabilities
+      run: |
+        if npm audit --audit-level=high; then
+          echo "❌ High severity vulnerabilities found"
+          exit 1
+        else
+          echo "✅ No high severity vulnerabilities found"
+        fi
+
+  build:
+    name: Build Verification
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install src dependencies
+      run: cd src && npm ci
+      
+    - name: Verify build
+      run: |
+        # Test that the CLI can be imported
+        node -e "import('./src/cli.js').then(() => console.log('✅ CLI imports successfully'))"
+        
+        # Test that the main entry point works
+        node -e "import('./src/index.js').then(() => console.log('✅ Main entry point works'))"
+        
+        # Test configuration loading
+        node -e "import('./src/utils/config.js').then(m => m.loadConfig('./src/config/config.json').then(() => console.log('✅ Config loading works')))"
+        
+        echo "✅ Build verification completed"
