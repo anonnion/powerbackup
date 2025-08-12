@@ -13,7 +13,6 @@ export { PowerBackupScheduler } from './scheduler.js';
 export { log } from './utils/logger.js';
 
 // Export utility functions
-export { loadConfig } from './utils/config.js';
 export { encryptBackupFile, decryptBackupFile, compressBackupFile, decompressBackupFile } from './utils/file.js';
 
 // Export backup functions
