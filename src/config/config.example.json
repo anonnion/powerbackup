@@ -1,0 +1,51 @@
+{
+  "backup_dir": "../../backups",
+  "gpg": {
+    "symmetric_passphrase_file": "./src/config/passphrase",
+    "recipients": []
+  },
+  "databases": [
+    {
+      "name": "example-mysql",
+      "type": "mysql",
+      "url": "mysql://user:password@localhost:3306/database_name",
+      "keep": {
+        "hourly": 24,
+        "daily": 7,
+        "weekly": 4,
+        "monthly": 12,
+        "yearly": 0
+      },
+      "test_restore": {
+        "enabled": true,
+        "verify_query": "SELECT COUNT(*) FROM information_schema.tables",
+        "hour": 3
+      }
+    },
+    {
+      "name": "example-postgres",
+      "type": "postgres",
+      "url": "postgresql://user:password@localhost:5432/database_name",
+      "keep": {
+        "hourly": 24,
+        "daily": 7,
+        "weekly": 4,
+        "monthly": 12,
+        "yearly": 0
+      },
+      "test_restore": {
+        "enabled": true,
+        "verify_query": "SELECT COUNT(*) FROM information_schema.tables",
+        "hour": 3
+      }
+    }
+  ],
+  "keyring_path": "./src/config/keyring.gpg",
+  "default_keep": {
+    "hourly": 24,
+    "daily": 7,
+    "weekly": 4,
+    "monthly": 12,
+    "yearly": 0
+  }
+}

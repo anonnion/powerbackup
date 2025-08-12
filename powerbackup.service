@@ -1,0 +1,33 @@
+[Unit]
+Description=PowerBackup Scheduler
+Documentation=https://github.com/your-org/powerbackup
+After=network.target
+
+[Service]
+Type=simple
+User=powerbackup
+Group=powerbackup
+WorkingDirectory=/opt/powerbackup
+ExecStart=/usr/bin/node src/scheduler.js src/config/config.json daemon
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=powerbackup
+Environment=NODE_ENV=production
+Environment=LOG_LEVEL=info
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/powerbackup/backups /opt/powerbackup/logs
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target

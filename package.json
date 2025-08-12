@@ -1,0 +1,52 @@
+{
+  "name": "powerbackup",
+  "version": "2.0.0",
+  "description": "Multi-Database Backup & Restore Tool with Beautiful Logging",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/cli.js",
+    "test": "node src/test-backup.js",
+    "dev": "node --watch src/cli.js",
+    "install-deps": "cd src && npm install",
+    "help": "node src/cli.js",
+    "list": "node src/cli.js list-dbs",
+    "add": "node src/cli.js add-db",
+    "backup": "node src/cli.js create-now",
+    "test-restore": "node src/cli.js test-restore",
+    "restore": "node src/cli.js restore",
+    "tables": "node src/cli.js list-tables",
+    "restore-table": "node src/cli.js restore-table",
+    "interactive": "node src/cli.js interactive-restore",
+    "backups": "node src/cli.js list-backups",
+    "test:unit": "node src/tests/unit.js",
+    "test:integration": "node src/tests/integration.js",
+    "test:all": "npm run test:unit && npm run test:integration",
+    "scheduler:once": "node src/scheduler.js src/config/config.json once",
+    "scheduler:daemon": "node src/scheduler.js src/config/config.json daemon",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop powerbackup-scheduler",
+    "pm2:restart": "pm2 restart powerbackup-scheduler",
+    "pm2:status": "pm2 status",
+    "pm2:logs": "pm2 logs powerbackup-scheduler",
+    "pm2:monit": "pm2 monit",
+    "install:pm2": "npm install -g pm2",
+    "install:cron": "chmod +x install-cron.sh && ./install-cron.sh",
+    "install:windows": "powershell -ExecutionPolicy Bypass -File install-windows-task.ps1",
+    "install:systemd": "sudo cp powerbackup.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable powerbackup"
+  },
+  "keywords": [
+    "backup",
+    "database",
+    "mysql",
+    "postgresql",
+    "restore",
+    "encryption",
+    "compression"
+  ],
+  "author": "PowerBackup Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

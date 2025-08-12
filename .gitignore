@@ -1,0 +1,289 @@
+# 🚀 PowerBackup v2.0.0 - Git Ignore Rules
+
+# =============================================================================
+# Node.js Dependencies & Build Artifacts
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+.pnp.*
+*.tgz
+*.tar.gz
+
+# =============================================================================
+# PowerBackup Specific - Sensitive Data & Backups
+# =============================================================================
+# Backup files and directories
+backups/
+**/backups/
+
+# GPG encryption files
+**/config/passphrase
+**/config/keyring.gpg
+**/config/*.gpg
+**/config/*.asc
+**/config/private.key
+**/config/public.key
+
+# Configuration files with sensitive data
+config.json
+**/config.json
+**/config/local.json
+**/config/production.json
+**/config/staging.json
+
+# Database connection files
+**/config/database.json
+**/config/db.json
+
+# =============================================================================
+# Logs & Monitoring
+# =============================================================================
+# Application logs
+logs/
+**/logs/
+*.log
+*.log.*
+
+# PM2 logs
+.pm2/
+pm2.log
+
+# Winston logs
+winston-*.log
+
+# Scheduler logs
+scheduler-*.log
+cron.log
+
+# =============================================================================
+# Temporary Files & Cache
+# =============================================================================
+# Temporary files
+tmp/
+temp/
+**/tmp/
+**/temp/
+*.tmp
+*.temp
+
+# Cache directories
+.cache/
+**/.cache/
+.npm/
+.eslintcache
+
+# Temporary database files
+*.sql.tmp
+*.dump.tmp
+*.backup.tmp
+
+# =============================================================================
+# Environment & Configuration
+# =============================================================================
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.staging
+
+# Local configuration overrides
+*.local
+local.*
+
+# =============================================================================
+# IDE & Editor Files
+# =============================================================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# =============================================================================
+# OS Generated Files
+# =============================================================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================================================
+# Testing & Coverage
+# =============================================================================
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Test results
+test-results/
+junit.xml
+test-report.xml
+
+# =============================================================================
+# Build & Distribution
+# =============================================================================
+# Build outputs
+dist/
+build/
+out/
+
+# Compiled binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# =============================================================================
+# Security & Certificates
+# =============================================================================
+# SSL certificates
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# SSH keys
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# =============================================================================
+# Database Files
+# =============================================================================
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Database dumps (in case they're not in backups/)
+*.sql
+*.dump
+*.backup
+
+# =============================================================================
+# Cloud & Deployment
+# =============================================================================
+# AWS
+.aws/
+aws-credentials
+
+# Google Cloud
+.gcloud/
+service-account-key.json
+
+# Azure
+.azure/
+
+# Docker
+.dockerignore
+Dockerfile.local
+
+# =============================================================================
+# Development Tools
+# =============================================================================
+# ESLint
+.eslintcache
+
+# Prettier
+.prettierignore
+
+# TypeScript
+*.tsbuildinfo
+
+# =============================================================================
+# PowerBackup Specific - Runtime Files
+# =============================================================================
+# Scheduler state files
+scheduler-state.json
+scheduler-lock.json
+
+# Backup metadata (if not in backups/)
+*.meta.json
+
+# Temporary restore databases
+temp_restore_*
+test_restore_*
+
+# =============================================================================
+# Documentation & Misc
+# =============================================================================
+# Generated documentation
+docs/build/
+docs/_build/
+
+# Backup of documentation
+*.md.bak
+*.txt.bak
+
+# =============================================================================
+# Keep Important Files
+# =============================================================================
+# Don't ignore these important files
+!README.md
+!README.MD
+!DEPLOYMENT.md
+!LICENSE
+!package.json
+!package-lock.json
+!yarn.lock
+!ecosystem.config.js
+!powerbackup.service
+!install-cron.sh
+!install-windows-task.ps1
+!setup.sh
+!src/config/config.example.json

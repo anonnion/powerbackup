@@ -1,0 +1,19 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Backups
+backups/
+
+# Config files with sensitive data
+config/keyring.gpg
+config/passphrase
+
+# Logs
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db

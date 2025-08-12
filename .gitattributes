@@ -1,0 +1,144 @@
+# 🚀 PowerBackup v2.0.0 - Git Attributes
+
+# =============================================================================
+# Text Files - Normalize Line Endings
+# =============================================================================
+# JavaScript files
+*.js text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
+
+# JSON files
+*.json text eol=lf
+
+# Markdown files
+*.md text eol=lf
+*.markdown text eol=lf
+
+# Configuration files
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+*.cfg text eol=lf
+*.conf text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+
+# PowerShell scripts
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf
+
+# Batch files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# =============================================================================
+# Binary Files - Don't Diff
+# =============================================================================
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.webp binary
+
+# Archives
+*.zip binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.7z binary
+*.rar binary
+
+# Documents
+*.pdf binary
+*.doc binary
+*.docx binary
+*.xls binary
+*.xlsx binary
+*.ppt binary
+*.pptx binary
+
+# =============================================================================
+# Database & Backup Files
+# =============================================================================
+# Database files
+*.db binary
+*.sqlite binary
+*.sqlite3 binary
+*.sql binary
+*.dump binary
+*.backup binary
+
+# GPG files
+*.gpg binary
+*.asc binary
+*.key binary
+*.pem binary
+*.crt binary
+*.csr binary
+
+# =============================================================================
+# Generated Files
+# =============================================================================
+# Logs
+*.log binary
+*.log.* binary
+
+# Cache files
+*.cache binary
+*.tmp binary
+*.temp binary
+
+# =============================================================================
+# Scripts - Make Executable
+# =============================================================================
+# Shell scripts
+*.sh text eol=lf executable
+install-cron.sh text eol=lf executable
+setup.sh text eol=lf executable
+
+# =============================================================================
+# Documentation
+# =============================================================================
+# README files
+README* text eol=lf
+*.md text eol=lf
+
+# License files
+LICENSE* text eol=lf
+COPYING* text eol=lf
+
+# =============================================================================
+# Configuration Files
+# =============================================================================
+# Package files
+package.json text eol=lf
+package-lock.json text eol=lf
+yarn.lock text eol=lf
+
+# PM2 configuration
+ecosystem.config.js text eol=lf
+
+# Systemd service
+*.service text eol=lf
+
+# =============================================================================
+# Exclude from Export
+# =============================================================================
+# Don't include in archives
+.gitattributes export-ignore
+.gitignore export-ignore
+.github/ export-ignore
+.vscode/ export-ignore
+.idea/ export-ignore
+node_modules/ export-ignore
+logs/ export-ignore
+backups/ export-ignore
+*.log export-ignore
