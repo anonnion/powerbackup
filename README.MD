@@ -209,7 +209,179 @@ export LOG_LEVEL="debug"
 
 ## 🛠 Command Reference
 
-*(unchanged from original — full table with all commands & options)*
+
+### 🎯 **Quick Commands**
+| Command | Description | Example |
+|---------|-------------|---------|
+| `npm run help` | Show beautiful help guide | `npm run help` |
+| `npm run list` | List configured databases | `npm run list` |
+| `npm run add` | Add new database interactively | `npm run add` |
+| `npm run backup <db>` | Create backup immediately | `npm run backup myapp` |
+| `npm run test-restore <db>` | Test restore (safe) | `npm run test-restore myapp` |
+| `npm run restore <db>` | Restore to target (destructive) | `npm run restore myapp` |
+| `npm run tables <db>` | List tables in backup | `npm run tables myapp` |
+| `npm run interactive <db>` | Interactive table restore | `npm run interactive myapp` |
+| `npm run backups <db>` | List available backups | `npm run backups myapp` |
+
+### 🔧 **Advanced Commands**
+| Command | Description | Options |
+|---------|-------------|---------|
+| `npm start create-now <db>` | Create backup | `--schema-only` |
+| `npm start test-restore <db>` | Test restore | `--target <db>` |
+| `npm start restore <db>` | Actual restore | `--target <db>` |
+| `npm start restore-table <db> <table>` | Restore table | `--target <db>` |
+| `npm start list-backups <db>` | List backups | `--tier <tier>` |
+
+### 🧪 **Testing Commands**
+| Command | Description |
+|---------|-------------|
+| `npm run test:unit` | Run unit tests |
+| `npm run test:integration` | Run integration tests |
+| `npm run test:all` | Run all tests |
+
+### ⏰ **Scheduling Commands**
+| Command | Description |
+|---------|-------------|
+| `npm run scheduler:once` | Run scheduled tasks once |
+| `npm run scheduler:daemon` | Run scheduler in daemon mode |
+| `npm run pm2:start` | Start scheduler with PM2 |
+| `npm run pm2:stop` | Stop PM2 scheduler |
+| `npm run pm2:status` | Check PM2 status |
+| `npm run pm2:logs` | View PM2 logs |
+| `npm run install:pm2` | Install PM2 globally |
+| `npm run install:cron` | Install cron jobs (Linux/Unix) |
+| `npm run install:windows` | Install Windows Task Scheduler |
+| `npm run install:systemd` | Install systemd service (Linux) |
+
+## ⚙️ Configuration
+
+### Database Configuration
+
+Create or edit `src/config/config.json`:
+
+```json
+{
+  "backup_dir": "../../backups",
+  "gpg": {
+    "symmetric_passphrase_file": "./src/config/passphrase",
+    "recipients": []
+  },
+  "databases": [
+    {
+      "name": "myapp",
+      "type": "mysql",
+      "url": "mysql://user:pass@localhost:3306/myapp",
+      "keep": {
+        "hourly": 24,
+        "daily": 7,
+        "weekly": 4,
+        "monthly": 12,
+        "yearly": 0
+      },
+      "test_restore": {
+        "enabled": true,
+        "verify_query": "SELECT COUNT(*) FROM information_schema.tables",
+        "hour": 3
+      }
+    },
+    {
+      "name": "postgres-app",
+      "type": "postgres",
+      "url": "postgresql://user:pass@localhost:5432/postgres-app",
+      "keep": {
+        "hourly": 24,
+        "daily": 7,
+        "weekly": 4,
+        "monthly": 12,
+        "yearly": 0
+      }
+    }
+  ]
+}
+```
+
+### Environment Variables
+
+```bash
+# Database URLs (alternative to config file)
+export MYSQL_URL="mysql://user:pass@localhost:3306/db"
+export POSTGRES_URL="postgresql://user:pass@localhost:5432/db"
+
+# Logging
+export LOG_LEVEL="debug"  # error, warn, info, success, debug
+```
+
+## 🔐 Security Setup
+
+### GPG Encryption
+
+1. **Create Passphrase File**:
+```bash
+echo "your-secure-passphrase" > src/config/passphrase
+chmod 600 src/config/passphrase
+```
+
+2. **Public Key Encryption** (Optional):
+```bash
+# Add recipient public keys to config
+{
+  "gpg": {
+    "recipients": ["user@example.com", "backup@company.com"]
+  }
+}
+```
+
+## 📊 Usage Examples
+
+### Basic Workflow
+
+```bash
+# 1. List databases
+npm run list
+
+# 2. Create backup
+npm run backup myapp
+
+# 3. Test restore (safe)
+npm run test-restore myapp
+
+# 4. List tables
+npm run tables myapp
+
+# 5. Restore specific table
+npm run restore-table myapp users
+
+# 6. Interactive restore
+npm run interactive myapp
+```
+
+### Advanced Scenarios
+
+```bash
+# Schema-only backup
+npm start create-now myapp --schema-only
+
+# Restore to different database
+npm start restore myapp --target myapp-restored
+
+# List backups by tier
+npm start list-backups myapp --tier daily
+
+# Restore specific table to different database
+npm start restore-table myapp users --target myapp-test
+```
+
+### Automation
+
+```bash
+# Add to crontab for automated backups
+0 */6 * * * cd /path/to/powerbackup && npm run backup myapp
+
+# Test restore at 3 AM daily
+0 3 * * * cd /path/to/powerbackup && npm run test-restore myapp
+```
+
+
 
 ---
 
