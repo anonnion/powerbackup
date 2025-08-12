@@ -1,7 +1,7 @@
 {
   "name": "powerbackup",
   "version": "2.1.3",
-  "description": "Multi-Database Backup & Restore Tool with Beautiful Logging",
+  "description": "Multi-Database Backup & Restore Tool v2.1.3 with Beautiful Logging & Restore Locations",
   "main": "src/index.js",
   "bin": {
     "powerbackup": "src/cli.js"
@@ -64,7 +64,7 @@
   "bugs": {
     "url": "https://github.com/anonnion/powerbackup/issues"
   },
-  "homepage": "https://github.com/anonnion/powerbackup#readme",
+  "homepage": "https://anonnion.github.io/powerbackup/",
   "files": [
     "src/",
     "docs/",
