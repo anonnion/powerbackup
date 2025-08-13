@@ -45,7 +45,7 @@ const customFormat = winston.format.printf(({ level, message, timestamp }) => {
 
 // Create logger instance
 const logger = winston.createLogger({
-    level: process.env.LOG_LEVEL || 'info',
+    level: process.env.LOG_LEVEL || 'success',
     levels: {
         error: 0,
         warn: 1,
@@ -59,6 +59,7 @@ const logger = winston.createLogger({
     ),
     transports: [
         new winston.transports.Console({
+            level: process.env.LOG_LEVEL || 'success',
             format: winston.format.combine(
                 winston.format.timestamp(),
                 customFormat
