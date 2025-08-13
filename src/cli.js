@@ -21,7 +21,19 @@ const program = new Command();
 program.version('2.1.5').description('Multi-DB backup & rotation tool with beautiful logging & restore locations').option('-c, --config <path>', 'Config file path', './src/config/config.json');
 
 program.command('list-dbs').description('List configured databases').action(listDbs);
-program.command('add-db').description('Add a new database').action(addDb);
+program
+  .command('add-db')
+  .description('Add a new database')
+  .option('--name <name>', 'Database name')
+  .option('--type <type>', 'Database type (mysql|postgres)')
+  .option('--url <url>', 'Database URL (e.g., mysql://user:pass@host:port/db)')
+  .option('--url-env <env>', 'Environment variable name that holds the URL')
+  .option('--keep-hourly <n>', 'Hourly backups to keep', '24')
+  .option('--keep-daily <n>', 'Daily backups to keep', '7')
+  .option('--enable-test-restore', 'Enable test restore', false)
+  .option('--test-hour <h>', 'Test restore hour (0-23)', '3')
+  .option('--non-interactive', 'Do not prompt; requires flags', false)
+  .action(addDb);
 program.command('create-now <name>').description('Create backup immediately').action(createNow);
 program.command('test-restore <name>').description('Test restore to temporary database (safe)').action(testRestore);
 program.command('restore <name>').description('Restore to target database (destructive)').option('--target <database>', 'Target database name (defaults to original name)').action(actualRestore);
@@ -38,11 +50,17 @@ program.command('remove-restore-location').description('Remove a restore locatio
 program.command('manage-restore-locations').description('Interactive restore location management').action(manageRestoreLocations);
 
 async function loadConfig() {
+    const configPath = path.resolve(process.cwd(), program.opts().config);
     try {
-        const configPath = path.resolve(process.cwd(), program.opts().config);
         const content = await fs.readFile(configPath, 'utf8');
         return JSON.parse(content);
     } catch (e) {
+        if (e && e.code === 'ENOENT') {
+            console.log(chalk.yellow('🆕 First-time run detected. Running initial setup...'));
+            await basicInit();
+            const content = await fs.readFile(configPath, 'utf8');
+            return JSON.parse(content);
+        }
         throw new Error(`Failed to load config: ${e.message}`);
     }
 }
@@ -73,27 +91,53 @@ async function listDbs() {
     }
 }
 
-async function addDb() {
+async function addDb(options) {
     try {
-        const answers = await inquirer.prompt([
-            { type: 'input', name: 'name', message: 'Database name:', validate: input => input ? true : 'Name is required' },
-            { type: 'list', name: 'type', message: 'Database type:', choices: ['mysql', 'postgres'] },
-            { type: 'confirm', name: 'useEnv', message: 'Use environment variable for URL?' },
-            { type: 'input', name: 'url', message: 'Database URL:', when: answers => !answers.useEnv, validate: input => input ? true : 'URL is required' },
-            { type: 'input', name: 'urlEnv', message: 'Environment variable name:', when: answers => answers.useEnv, validate: input => input ? true : 'Environment variable name is required' },
-            { type: 'confirm', name: 'configureRetention', message: 'Configure backup retention?', default: true },
-            { type: 'input', name: 'keepHourly', message: 'Keep hourly backups:', default: '24', when: answers => answers.configureRetention, validate: input => !isNaN(input) ? true : 'Must be a number' },
-            { type: 'input', name: 'keepDaily', message: 'Keep daily backups:', default: '7', when: answers => answers.configureRetention, validate: input => !isNaN(input) ? true : 'Must be a number' },
-            { type: 'confirm', name: 'enableTestRestore', message: 'Enable test restore?', default: true },
-            { type: 'input', name: 'testHour', message: 'Test restore hour (0-23):', default: '3', when: answers => answers.enableTestRestore, validate: input => { const num = parseInt(input); return num >= 0 && num <= 23 ? true : 'Must be between 0 and 23'; } }
-        ]);
+        let answers = {};
+        if (options?.nonInteractive) {
+            // Non-interactive mode
+            answers = {
+                name: options.name,
+                type: options.type,
+                url: options.url,
+                urlEnv: options.urlEnv,
+                configureRetention: true,
+                keepHourly: options.keepHourly ?? options.keephourly ?? options.keepHourly,
+                keepDaily: options.keepDaily ?? options.keepdaily ?? options.keepDaily,
+                enableTestRestore: !!options.enableTestRestore,
+                testHour: options.testHour ?? options.testhour ?? options.testHour
+            };
+            if (!answers.name) throw new Error('Name is required (--name)');
+            if (!answers.type || !['mysql','postgres'].includes(answers.type)) throw new Error('Type is required and must be mysql or postgres (--type)');
+            if (!answers.url && !answers.urlEnv) throw new Error('Either --url or --url-env is required');
+            if (!answers.keepHourly) answers.keepHourly = '24';
+            if (!answers.keepDaily) answers.keepDaily = '7';
+            if (answers.enableTestRestore && (isNaN(parseInt(answers.testHour)) || parseInt(answers.testHour) < 0 || parseInt(answers.testHour) > 23)) {
+                throw new Error('Invalid --test-hour (0-23)');
+            }
+        } else {
+            // Interactive mode
+            answers = await inquirer.prompt([
+                { type: 'input', name: 'name', message: 'Database name:', validate: input => input ? true : 'Name is required' },
+                { type: 'list', name: 'type', message: 'Database type:', choices: ['mysql', 'postgres'] },
+                { type: 'confirm', name: 'useEnv', message: 'Use environment variable for URL?' },
+                { type: 'input', name: 'url', message: 'Database URL:', when: answers => !answers.useEnv, validate: input => input ? true : 'URL is required' },
+                { type: 'input', name: 'urlEnv', message: 'Environment variable name:', when: answers => answers.useEnv, validate: input => input ? true : 'Environment variable name is required' },
+                { type: 'confirm', name: 'configureRetention', message: 'Configure backup retention?', default: true },
+                { type: 'input', name: 'keepHourly', message: 'Keep hourly backups:', default: '24', when: answers => answers.configureRetention, validate: input => !isNaN(input) ? true : 'Must be a number' },
+                { type: 'input', name: 'keepDaily', message: 'Keep daily backups:', default: '7', when: answers => answers.configureRetention, validate: input => !isNaN(input) ? true : 'Must be a number' },
+                { type: 'confirm', name: 'enableTestRestore', message: 'Enable test restore?', default: true },
+                { type: 'input', name: 'testHour', message: 'Test restore hour (0-23):', default: '3', when: answers => answers.enableTestRestore, validate: input => { const num = parseInt(input); return num >= 0 && num <= 23 ? true : 'Must be between 0 and 23'; } }
+            ]);
+        }
+
         const config = await loadConfig();
         const db = { name: answers.name, type: answers.type };
         if (answers.url) db.url = answers.url;
         if (answers.urlEnv) db.url_env = answers.urlEnv;
         if (answers.configureRetention) db.keep = { hourly: parseInt(answers.keepHourly), daily: parseInt(answers.keepDaily), weekly: 4, monthly: 12, yearly: 0 };
         if (answers.enableTestRestore) db.test_restore = { enabled: true, hour: parseInt(answers.testHour) };
-        config.databases = config.databases || [];
+        if (!Array.isArray(config.databases)) config.databases = [];
         config.databases.push(db);
         await saveConfig(config);
         log.success(`Added database ${chalk.cyan(db.name)}`);
@@ -440,24 +484,22 @@ async function basicInit() {
             // Config doesn't exist, continue
         }
         
-        // Create default config
+        // Create default config aligned with example schema
         const defaultConfig = {
-            backup_directory: "./backups",
-            databases: {},
-            encryption: {
-                enabled: true,
+            backup_dir: "../../backups",
+            gpg: {
                 symmetric_passphrase_file: "./src/config/passphrase",
-                keyring_path: "./src/config/keyring.gpg"
+                recipients: []
             },
-            compression: {
-                enabled: true,
-                algorithm: "gzip"
-            },
-            logging: {
-                level: "info",
-                file: "./logs/powerbackup.log",
-                max_size: "10m",
-                max_files: 5
+            restore_locations: {},
+            databases: [],
+            keyring_path: "./src/config/keyring.gpg",
+            default_keep: {
+                hourly: 24,
+                daily: 7,
+                weekly: 4,
+                monthly: 12,
+                yearly: 0
             }
         };
         
