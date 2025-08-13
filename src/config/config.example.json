@@ -4,6 +4,23 @@
     "symmetric_passphrase_file": "./src/config/passphrase",
     "recipients": []
   },
+  "api": {
+    "enabled": false,
+    "port": 3000,
+    "host": "localhost",
+    "cors": {
+      "origins": ["http://localhost:3000"]
+    },
+    "rateLimit": {
+      "max": 100,
+      "windowMs": 900000
+    },
+    "auth": {
+      "hmacSecret": null,
+      "jwtSecret": null,
+      "tokenExpiry": "24h"
+    }
+  },
   "restore_locations": {
     "development": {
       "mysql": "mysql://dev_user:dev_pass@localhost:3306/dev_db",

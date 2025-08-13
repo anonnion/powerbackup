@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+
 // CLI entrypoint for PowerBackup
 import { Command } from 'commander';
 import inquirer from 'inquirer';
@@ -13,8 +14,8 @@ import figlet from 'figlet';
 
 // Display beautiful banner
 function showBanner() {
-    console.log(chalk.cyan(figlet.textSync('PowerBackup', { font: 'Standard' })));
-    console.log(chalk.gray('Multi-Database Backup & Restore Tool v2.1.5\n'));
+        console.log(chalk.cyan(figlet.textSync('PowerBackup', { font: 'Standard' })));
+        console.log(chalk.gray('Multi-Database Backup & Restore Tool v2.1.5\n'));
 }
 
 const program = new Command();
@@ -48,6 +49,12 @@ program.command('list-restore-locations').description('List configured restore l
 program.command('add-restore-location').description('Add a new restore location interactively').action(addRestoreLocation);
 program.command('remove-restore-location').description('Remove a restore location interactively').action(removeRestoreLocation);
 program.command('manage-restore-locations').description('Interactive restore location management').action(manageRestoreLocations);
+
+// API management commands (preserved from original cli.js)
+program.command('api:enable').description('Enable PowerBackup API').action(enableAPI);
+program.command('api:disable').description('Disable PowerBackup API').action(disableAPI);
+program.command('api:status').description('Show API status').action(apiStatus);
+program.command('api:generate-key').description('Generate new API keys').action(generateAPIKeys);
 
 async function loadConfig() {
     const configPath = path.resolve(process.cwd(), program.opts().config);
@@ -580,6 +587,126 @@ async function manageRestoreLocations() {
     }
 }
 
+// API Management Functions
+async function enableAPI() {
+    try {
+        const config = await loadConfig();
+        
+        if (!config.api) {
+            config.api = {
+                enabled: true,
+                port: 3000,
+                host: 'localhost',
+                cors: {
+                    origins: ['http://localhost:3000']
+                },
+                rateLimit: {
+                    max: 100,
+                    windowMs: 900000
+                },
+                auth: {
+                    hmacSecret: null,
+                    jwtSecret: null,
+                    tokenExpiry: '24h'
+                }
+            };
+        } else {
+            config.api.enabled = true;
+        }
+
+        // Generate secrets if not present
+        if (!config.api.auth.hmacSecret) {
+            const crypto = require('crypto');
+            config.api.auth.hmacSecret = crypto.randomBytes(32).toString('hex');
+        }
+        
+        if (!config.api.auth.jwtSecret) {
+            const crypto = require('crypto');
+            config.api.auth.jwtSecret = crypto.randomBytes(32).toString('hex');
+        }
+
+        await saveConfig(config);
+        log.success('✅ PowerBackup API enabled successfully!');
+        log.info(`🔑 HMAC Secret: ${chalk.cyan(config.api.auth.hmacSecret)}`);
+        log.info(`🔑 JWT Secret: ${chalk.cyan(config.api.auth.jwtSecret)}`);
+        log.info(`🌐 API will be available at: ${chalk.cyan(`http://${config.api.host}:${config.api.port}`)}`);
+        log.info(`📋 Start the API with: ${chalk.green('npm run api')}`);
+    } catch (e) {
+        log.error('Error:', e.message);
+        process.exit(1);
+    }
+}
+
+async function disableAPI() {
+    try {
+        const config = await loadConfig();
+        
+        if (config.api) {
+            config.api.enabled = false;
+            await saveConfig(config);
+            log.success('✅ PowerBackup API disabled successfully!');
+        } else {
+            log.warn('API was not configured');
+        }
+    } catch (e) {
+        log.error('Error:', e.message);
+        process.exit(1);
+    }
+}
+
+async function apiStatus() {
+    try {
+        const config = await loadConfig();
+        
+        if (!config.api) {
+            log.info('📋 API Status: Not configured');
+            return;
+        }
+
+        log.info('📋 PowerBackup API Status:');
+        console.log(`  Status: ${config.api.enabled ? chalk.green('✅ Enabled') : chalk.red('❌ Disabled')}`);
+        console.log(`  Host: ${chalk.cyan(config.api.host)}`);
+        console.log(`  Port: ${chalk.cyan(config.api.port)}`);
+        console.log(`  HMAC Secret: ${config.api.auth?.hmacSecret ? chalk.green('✅ Configured') : chalk.red('❌ Not configured')}`);
+        console.log(`  JWT Secret: ${config.api.auth?.jwtSecret ? chalk.green('✅ Configured') : chalk.red('❌ Not configured')}`);
+        
+        if (config.api.enabled) {
+            console.log(`\n🌐 API URL: ${chalk.cyan(`http://${config.api.host}:${config.api.port}`)}`);
+            console.log(`📋 Start command: ${chalk.green('npm run api')}`);
+        }
+    } catch (e) {
+        log.error('Error:', e.message);
+        process.exit(1);
+    }
+}
+
+async function generateAPIKeys() {
+    try {
+        const config = await loadConfig();
+        
+        if (!config.api) {
+            log.error('API must be enabled first. Run: powerbackup api:enable');
+            process.exit(1);
+        }
+
+        const crypto = require('crypto');
+        const newHmacSecret = crypto.randomBytes(32).toString('hex');
+        const newJwtSecret = crypto.randomBytes(32).toString('hex');
+
+        config.api.auth.hmacSecret = newHmacSecret;
+        config.api.auth.jwtSecret = newJwtSecret;
+
+        await saveConfig(config);
+        log.success('✅ New API keys generated successfully!');
+        log.info(`🔑 New HMAC Secret: ${chalk.cyan(newHmacSecret)}`);
+        log.info(`🔑 New JWT Secret: ${chalk.cyan(newJwtSecret)}`);
+        log.warn('⚠️  Previous API keys are now invalid. Update your clients accordingly.');
+    } catch (e) {
+        log.error('Error:', e.message);
+        process.exit(1);
+    }
+}
+
 // Parse arguments and run
 async function main() {
     try {
@@ -625,6 +752,12 @@ function showBeautifulHelp() {
     console.log(`  ${chalk.green('powerbackup list-tables <db>')}      - List tables in latest backup`);
     console.log(`  ${chalk.green('powerbackup restore-table <db> <table>')} - Restore specific table`);
     console.log(`  ${chalk.green('powerbackup interactive-restore <db>')}   - Interactive table selection\n`);
+    
+    console.log(chalk.yellow('🔌 API Management:'));
+    console.log(`  ${chalk.green('powerbackup api:enable')}        - Enable PowerBackup API`);
+    console.log(`  ${chalk.green('powerbackup api:disable')}       - Disable PowerBackup API`);
+    console.log(`  ${chalk.green('powerbackup api:status')}        - Show API status`);
+    console.log(`  ${chalk.green('powerbackup api:generate-key')}  - Generate new API keys\n`);
     
     console.log(chalk.yellow('🔧 Options:'));
     console.log(`  ${chalk.gray('--target <database>')} - Specify target database for restore operations`);
