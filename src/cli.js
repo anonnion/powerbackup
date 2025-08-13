@@ -8,6 +8,23 @@ import fs from 'fs/promises';
 import path from 'path';
 import { BackupManager } from './backup/manager.js';
 import { log } from './utils/logger.js';
+import { loadConfig } from './utils/config.js';
+// Load config.json at runtime so it works globally
+let configPath = path.resolve(process.cwd(), './src/config/config.json');
+try {
+    // If user passed --config, use that
+    const configArgIndex = process.argv.findIndex(arg => arg === '-c' || arg === '--config');
+    if (configArgIndex !== -1 && process.argv[configArgIndex + 1]) {
+        configPath = path.resolve(process.cwd(), process.argv[configArgIndex + 1]);
+    }
+} catch {}
+let loadedConfig = {};
+try {
+    loadedConfig = await loadConfig(configPath);
+} catch (e) {
+    log.warn('Could not load config:', e.message);
+}
+global.powerbackupConfig = loadedConfig;
 import { RestoreLocationsManager } from './utils/restore-locations.js';
 import chalk from 'chalk';
 import figlet from 'figlet';
@@ -76,7 +93,7 @@ program.command('api:disable').description('Disable PowerBackup API').action(dis
 program.command('api:status').description('Show API status').action(apiStatus);
 program.command('api:generate-key').description('Generate new API keys').action(generateAPIKeys);
 
-async function loadConfig() {
+async function loadCliConfig() {
     const configPath = path.resolve(process.cwd(), program.opts().config);
     try {
         const content = await fs.readFile(configPath, 'utf8');

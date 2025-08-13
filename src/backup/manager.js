@@ -38,55 +38,52 @@ export class BackupManager {
         const timestamp = format(new Date(), 'yyyy-MM-dd_HHmm');
         const fileName = `${dbConfig.name}_${timestamp}.sql`;
         const { path: sqlPath, cleanup } = await tmpFile();
-        
+        let gzPath, decompPath, finalPath, destPath, metaPath;
         try {
             log.backup.start(dbConfig.name);
+            log.debug(`[DEBUG] sqlPath: ${sqlPath}`);
             await this.createDump(dbConfig, sqlPath, schemaOnly);
-            
+            log.debug(`[DEBUG] Dump created at: ${sqlPath}`);
             // Validate SQL dump
             const sqlData = await fs.readFile(sqlPath);
             const sqlPreview = sqlData.toString('utf8').split('\n').slice(0, 5).join('\n');
             log.info('SQL dump preview:', sqlPreview);
-            
             if (!sqlData.toString('utf8').match(/^[-\s]*(?:PowerBackup|CREATE|INSERT|SET|COPY)/)) {
                 throw new Error('Generated SQL dump does not appear to be valid');
             }
-            
             // Compress using gzip
             log.compression.start();
-            const gzPath = sqlPath + '.gz';
+            gzPath = sqlPath + '.gz';
             await compressFile(sqlPath, gzPath, 'gzip');
-            
+            log.debug(`[DEBUG] gzPath: ${gzPath}`);
             // Verify compression by decompressing a sample
             const { createGunzip } = await import('zlib');
             const gunzip = createGunzip();
-            const { path: decompPath } = await tmpFile();
+            ({ path: decompPath } = await tmpFile());
+            log.debug(`[DEBUG] decompPath: ${decompPath}`);
             const readStream = createReadStream(gzPath);
             const writeStream = createWriteStream(decompPath);
             await pipeline(readStream, gunzip, writeStream);
-            
             const decompData = await fs.readFile(decompPath);
             const decompPreview = decompData.toString('utf8').split('\n').slice(0, 5).join('\n');
             log.compression.complete();
             await fs.unlink(decompPath);
             await fs.unlink(sqlPath);
-            
             // Encrypt if configured
-            let finalPath = gzPath;
+            finalPath = gzPath;
             let encrypted = false;
             const recipients = dbConfig.recipients || this.config.gpg?.recipients || [];
-            
             if (recipients.length || this.config.gpg?.symmetric_passphrase_file) {
                 log.encryption.start();
                 finalPath = gzPath + '.gpg';
+                log.debug(`[DEBUG] finalPath (for encryption): ${finalPath}`);
                 encrypted = await encryptFile(gzPath, finalPath, this.config, recipients);
                 log.encryption.complete();
                 await fs.unlink(gzPath);
             }
-            
             // Calculate checksum
+            log.debug(`[DEBUG] finalPath (for checksum): ${finalPath}`);
             const checksum = await this.calculateChecksum(finalPath);
-            
             // Create metadata
             const meta = {
                 tool_version: PKG_VERSION,
@@ -97,27 +94,30 @@ export class BackupManager {
                 encrypted,
                 sha256: checksum
             };
-            
             // Move to backup directory
             const backupDir = path.join(this.config.backup_dir, dbConfig.name, 'hourly');
             await fs.mkdir(backupDir, { recursive: true });
-            const destPath = path.join(backupDir, path.basename(finalPath));
+            destPath = path.join(backupDir, path.basename(finalPath));
+            log.debug(`[DEBUG] destPath: ${destPath}`);
+            if (!finalPath || typeof finalPath !== 'string') {
+                throw new Error(`[BUG] finalPath is invalid: ${finalPath}`);
+            }
             await fs.rename(finalPath, destPath);
-            const metaPath = destPath + '.meta.json';
+            metaPath = destPath + '.meta.json';
+            log.debug(`[DEBUG] metaPath: ${metaPath}`);
             await fs.writeFile(metaPath, JSON.stringify(meta, null, 2));
-            
             log.backup.complete(dbConfig.name, path.basename(destPath));
-            
             // Upload to S3 if configured
             try {
                 await this.uploadToS3(destPath);
             } catch (e) {
                 log.warn('S3 upload failed:', e.message);
             }
-            
             return destPath;
         } catch (error) {
-            log.backup.error(dbConfig.name, error.message);
+            log.backup.error(dbConfig.name, error.message, {
+                sqlPath, gzPath, decompPath, finalPath, destPath, metaPath
+            });
             throw error;
         } finally {
             cleanup();

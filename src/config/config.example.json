@@ -35,6 +35,12 @@
       "postgres": "postgresql://test_user:test_pass@localhost:5432/test_db"
     }
   },
+  "binaries": {
+    "pg_dump": null,
+    "pg_restore": null,
+    "mysqldump": null,
+    "mysql": null
+  },
   "databases": [
     {
       "name": "example-mysql",

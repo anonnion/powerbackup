@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: testdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  powerbackup:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      # Example: set config to point to the test Postgres
+      # You may want to mount a config file or set env vars as needed
+      NODE_ENV: development
+    volumes:
+      - ./backups:/app/backups
+      - ./config:/app/config
+    command: ["node", "src/cli.js", "create-now", "testdb"]
+volumes:
+  pgdata:

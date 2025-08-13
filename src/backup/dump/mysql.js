@@ -30,6 +30,15 @@ function escapeSQLValue(value) {
 }
 
 export async function createMySQLDump(url, outputPath, schemaOnly = false) {
+    // Try mysqldump CLI first
+    try {
+        await runMySQLDump(url, outputPath, schemaOnly);
+        log.info('Used mysqldump CLI for MySQL backup.');
+        return;
+    } catch (cliErr) {
+        log.warn('mysqldump CLI failed, falling back to Node.js dump:', cliErr.message);
+    }
+    // Fallback: Node.js dump logic
     let connection;
     try {
         const parsed = new URL(url);
@@ -40,12 +49,9 @@ export async function createMySQLDump(url, outputPath, schemaOnly = false) {
             database: parsed.pathname.slice(1),
             port: parsed.port || 3306
         });
-        
         const [rows] = await connection.query('SHOW TABLES');
         const tables = rows.map(row => Object.values(row)[0]);
-        
         log.info(`Found ${tables.length} tables to dump${schemaOnly ? ' (schema only)' : ''}`);
-        
         const writeStream = createWriteStream(outputPath);
         writeStream.write('-- PowerBackup MySQL dump\n');
         writeStream.write(`-- Created at: ${new Date().toISOString()}\n`);
@@ -54,24 +60,20 @@ export async function createMySQLDump(url, outputPath, schemaOnly = false) {
         }
         writeStream.write('\n');
         writeStream.write('SET FOREIGN_KEY_CHECKS=0;\n\n');
-        
         for (let i = 0; i < tables.length; i++) {
             const table = tables[i];
             log.backup.progress(table, i + 1, tables.length);
-            
             try {
                 // Get create table statement
                 const [createTable] = await connection.query(`SHOW CREATE TABLE \`${table}\``);
                 writeStream.write(`DROP TABLE IF EXISTS \`${table}\`;\n`);
                 writeStream.write(createTable[0]['Create Table'] + ';\n\n');
-
                 // Get data only if not schema-only
                 if (!schemaOnly) {
                     const [rows] = await connection.query(`SELECT * FROM \`${table}\``);
                     if (rows.length > 0) {
                         const columns = Object.keys(rows[0]);
                         writeStream.write(`INSERT INTO \`${table}\` (\`${columns.join('`,`')}\`) VALUES\n`);
-                        
                         rows.forEach((row, idx) => {
                             const values = columns.map(col => {
                                 const val = row[col];
@@ -87,11 +89,9 @@ export async function createMySQLDump(url, outputPath, schemaOnly = false) {
                 // Continue with other tables
             }
         }
-        
         writeStream.write('SET FOREIGN_KEY_CHECKS=1;\n');
         await new Promise(resolve => writeStream.end(resolve));
-        
-        log.success('MySQL dump completed successfully');
+        log.success('MySQL dump completed successfully (Node.js fallback).');
     } catch (error) {
         throw new Error(`MySQL dump failed: ${error.message}`);
     } finally {

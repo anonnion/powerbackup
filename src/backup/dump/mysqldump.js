@@ -1,0 +1,55 @@
+import { spawn } from 'child_process';
+import { log } from '../../utils/logger.js';
+import { findBinary } from '../../utils/find-binary.js';
+
+/**
+ * Run mysqldump using the provided MySQL URL and output file path.
+ * @param {string} url - MySQL connection string
+ * @param {string} outputPath - Path to write the dump file
+ * @param {boolean} schemaOnly - If true, dump schema only
+ * @returns {Promise<void>}
+ */
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { URL } = require('url');
+            const parsed = new URL(url);
+            const args = [];
+            if (parsed.hostname) args.push('-h', parsed.hostname);
+            if (parsed.port) args.push('-P', parsed.port);
+            if (parsed.username) args.push('-u', parsed.username);
+            if (parsed.password) args.push(`-p${parsed.password}`);
+            if (schemaOnly) args.push('--no-data');
+            args.push(parsed.pathname.replace(/^\//, ''));
+
+            // Try to get binary path from config or auto-detect
+            let binaryPath = process.env.MYSQLDUMP_PATH || null;
+            if (!binaryPath && global.powerbackupConfig && global.powerbackupConfig.binaries && global.powerbackupConfig.binaries.mysqldump) {
+                binaryPath = global.powerbackupConfig.binaries.mysqldump;
+            }
+            if (!binaryPath) {
+                binaryPath = await findBinary('mysqldump');
+                if (binaryPath) log.info(`[mysqldump] Auto-detected binary: ${binaryPath}`);
+            }
+            if (!binaryPath) binaryPath = 'mysqldump';
+
+            log.info(`[mysqldump] Running: ${binaryPath} ${args.join(' ')} > ${outputPath}`);
+            const child = spawn(binaryPath, args, { stdio: ['ignore', 'pipe', 'pipe'] });
+            const fs = require('fs');
+            const outStream = fs.createWriteStream(outputPath);
+            child.stdout.pipe(outStream);
+
+            child.stderr.on('data', (data) => {
+                log.error(`[mysqldump] ${data}`);
+            });
+            child.on('close', (code) => {
+                if (code === 0) {
+                    log.success('[mysqldump] Dump completed successfully');
+                    resolve();
+                } else {
+                    reject(new Error(`[mysqldump] exited with code ${code}`));
+                }
+            });
+        } catch (err) {
+            reject(err);
+        }
+    });
