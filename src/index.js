@@ -25,7 +25,10 @@ export { compressFile } from './backup/compress.js';
 export { encryptFile } from './backup/encrypt.js';
 
 // Version information
-export const VERSION = '2.1.5';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+export const PKG_VERSION = require('../package.json').version;
+export const VERSION = PKG_VERSION;
 export const DESCRIPTION = 'Multi-Database Backup & Restore Tool with Beautiful Logging & Restore Locations';
 
 // Main function for programmatic use

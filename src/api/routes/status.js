@@ -37,7 +37,7 @@ router.get('/', asyncHandler(async (req, res) => {
 
         // Get PowerBackup status
         const powerbackupStatus = {
-            version: process.env.npm_package_version || '2.1.5',
+            version: process.env.npm_package_version || require('../../../package.json').version,
             configLoaded: !!config,
             databasesCount: config?.databases?.length || 0,
             apiEnabled: config?.api?.enabled || false,

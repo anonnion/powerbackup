@@ -45,11 +45,11 @@ try {
 
 # Test 5: Test version
 Write-Host "📋 Test 5: Testing version command..." -ForegroundColor Yellow
-try {
-    $null = powerbackup --version 2>$null
-    Write-Host "✅ Version command works" -ForegroundColor Green
-} catch {
-    Write-Host "❌ Version command failed" -ForegroundColor Red
+$versionOutput = powerbackup --version 2>$null
+if ($versionOutput -match '2.2.0') {
+    Write-Host "✅ Version command works and version is 2.2.0" -ForegroundColor Green
+} else {
+    Write-Host "❌ Version command failed or version mismatch" -ForegroundColor Red
     exit 1
 }
 

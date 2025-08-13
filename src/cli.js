@@ -11,15 +11,18 @@ import { log } from './utils/logger.js';
 import { RestoreLocationsManager } from './utils/restore-locations.js';
 import chalk from 'chalk';
 import figlet from 'figlet';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const PKG_VERSION = require('../package.json').version;
 
 // Display beautiful banner
 function showBanner() {
-        console.log(chalk.cyan(figlet.textSync('PowerBackup', { font: 'Standard' })));
-        console.log(chalk.gray('Multi-Database Backup & Restore Tool v2.1.5\n'));
+    console.log(chalk.cyan(figlet.textSync('PowerBackup', { font: 'Standard' })));
+    console.log(chalk.gray(`Multi-Database Backup & Restore Tool v${PKG_VERSION}\n`));
 }
 
 const program = new Command();
-program.version('2.1.5').description('Multi-DB backup & rotation tool with beautiful logging & restore locations').option('-c, --config <path>', 'Config file path', './src/config/config.json');
+program.version(PKG_VERSION).description('Multi-DB backup & rotation tool with beautiful logging & restore locations').option('-c, --config <path>', 'Config file path', './src/config/config.json');
 
 program.command('list-dbs').description('List configured databases').action(listDbs);
 program
@@ -698,7 +701,7 @@ async function main() {
 
 // Beautiful help display
 function showBeautifulHelp() {
-    console.log(chalk.cyan('\n🚀 PowerBackup v2.1.5 - Quick Start Guide\n'));
+    console.log(chalk.cyan(`\n🚀 PowerBackup v${PKG_VERSION} - Quick Start Guide\n`));
     
     console.log(chalk.yellow('📋 Database Management:'));
     console.log(`  ${chalk.green('powerbackup list-dbs')}     - List all configured databases`);

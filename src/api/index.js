@@ -112,7 +112,7 @@ class PowerBackupAPI {
             res.json({
                 status: 'healthy',
                 timestamp: new Date().toISOString(),
-                version: process.env.npm_package_version || '2.1.5',
+                version: process.env.npm_package_version || require('../../package.json').version,
                 uptime: process.uptime()
             });
         });

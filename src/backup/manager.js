@@ -12,6 +12,8 @@ import * as openpgp from 'openpgp';
 import * as crypto from 'crypto';
 import { pipeline } from 'stream/promises';
 import { createReadStream, createWriteStream } from 'fs';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 export class BackupManager {
     constructor(config) {
@@ -87,7 +89,7 @@ export class BackupManager {
             
             // Create metadata
             const meta = {
-                tool_version: '2.0.0',
+                tool_version: require('../../../package.json').version,
                 db: dbConfig.name,
                 file: path.basename(finalPath),
                 timestamp: new Date().toISOString(),

@@ -43,10 +43,10 @@ fi
 
 # Test 5: Test version
 echo "📋 Test 5: Testing version command..."
-if powerbackup --version &> /dev/null; then
-    echo "✅ Version command works"
+if powerbackup --version | grep -q '2.2.0'; then
+    echo "✅ Version command works and version is 2.2.0"
 else
-    echo "❌ Version command failed"
+    echo "❌ Version command failed or version mismatch"
     exit 1
 fi
 

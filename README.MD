@@ -1,6 +1,9 @@
 # 🔋💾 PowerBackup v2.0.0
 
 **Backups you’ll actually enjoy running — secure, reliable, and beautiful.**
+# 🔋💾 PowerBackup v2.2.0
+
+**Backups you’ll actually enjoy running — secure, reliable, and beautiful.**
 
 [![CI/CD Pipeline](https://github.com/anonnion/powerbackup/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/ci.yml)
 [![Test Suite](https://github.com/anonnion/powerbackup/workflows/Test%20Suite/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/test.yml)
@@ -9,7 +12,7 @@
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Test Coverage](https://img.shields.io/badge/test%20coverage-97.6%25-brightgreen.svg)](https://github.com/anonnion/powerbackup)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.0.0-orange.svg)](package.json)
+[![Version](https://img.shields.io/badge/Version-2.2.0-orange.svg)](package.json)
  
 > **The Beautiful Backup Experience** — PowerBackup isn’t just another backup script.
 > It’s a modern, developer-friendly tool for MySQL & PostgreSQL that mixes
@@ -631,4 +634,4 @@ MIT — see [LICENSE](LICENSE)
 
 **🌟 Made with ❤️ by the PowerBackup Team**
 
-*Version 2.0.0 — The Beautiful Backup Experience*
+*Version 2.2.0 — The Beautiful Backup Experience*
