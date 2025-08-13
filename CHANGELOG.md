@@ -4,6 +4,29 @@ All notable changes to PowerBackup will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## \[2.2.0] - 2025-08-13
+
+### 🚀 Added
+
+* **API Service**: Introduced a full-featured REST API for PowerBackup, including endpoints for backups, restores, logs, status, and table management.
+* **API Authentication**: Added HMAC and JWT-based authentication for API endpoints.
+* **API Rate Limiting & CORS**: Implemented rate limiting and CORS configuration for secure API access.
+* **API Key Management**: CLI commands to enable/disable API, check status, and generate new API keys.
+* **Audit Logging**: Added audit middleware for API actions.
+* **Validation Middleware**: Robust request validation for all API routes.
+* **Comprehensive API Documentation**: All routes and middleware are documented in code and accessible via the API.
+
+### 🎨 Improved
+
+* **Version Management**: All version references in CLI, API, docs, and metadata now automatically pull from package.json for single-source-of-truth versioning.
+* **CLI User Experience**: Enhanced CLI help, banners, and command descriptions. Improved add-db command with non-interactive mode and better prompts.
+* **Docs & Badges**: Updated documentation and badges to reflect v2.2.0. GitHub Pages and README now show the correct version.
+
+### 🐛 Fixed
+
+* **Version Consistency**: Fixed all hardcoded version strings and ensured all scripts and tests check for the correct version.
+* **Test Scripts**: Improved version checks in global install test scripts for both bash and PowerShell.
+
 ## \[2.1.5] - 2025-08-12
 
 ### 🎨 Added
@@ -204,6 +227,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and 
 
 ## Version History
 
+* **v2.2.0**: API service, authentication, rate limiting, and documentation.
 * **v2.1.5**: NPM install button and badge fixes.
 * **v2.1.4**: Branch references and npm header fixes.
 * **v2.1.3**: README update and version consistency fixes.
