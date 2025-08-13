@@ -64,6 +64,16 @@ const logger = winston.createLogger({
                 winston.format.timestamp(),
                 customFormat
             )
+        }),
+        new winston.transports.File({
+            filename: process.env.VERBOSE_LOG_FILE || 'logs/powerbackup-verbose.log',
+            level: 'debug',
+            format: winston.format.combine(
+                winston.format.timestamp(),
+                winston.format.json()
+            ),
+            maxsize: 10 * 1024 * 1024, // 10MB
+            maxFiles: 5
         })
     ]
 });

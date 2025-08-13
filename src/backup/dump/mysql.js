@@ -83,7 +83,7 @@ export async function createMySQLDump(url, outputPath, schemaOnly = false) {
                     }
                 }
             } catch (tableError) {
-                log.warn(`Error dumping table ${table}:`, tableError.message);
+                log.warn(`Error dumping table ${table}:`, tableError);
                 // Continue with other tables
             }
         }

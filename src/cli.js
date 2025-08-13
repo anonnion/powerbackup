@@ -12,13 +12,32 @@ import { RestoreLocationsManager } from './utils/restore-locations.js';
 import chalk from 'chalk';
 import figlet from 'figlet';
 import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
+import path from 'path';
 const require = createRequire(import.meta.url);
-const PKG_VERSION = require('../package.json').version;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+function findPackageJson(startDir = __dirname) {
+    let dir = startDir;
+    while (dir !== path.parse(dir).root) {
+        const candidate = path.join(dir, 'package.json');
+        try {
+            require('fs').accessSync(candidate);
+            return candidate;
+        } catch {}
+        dir = path.dirname(dir);
+    }
+    throw new Error('package.json not found');
+}
+const PKG_VERSION = require(findPackageJson()).version;
 
 // Display beautiful banner
 function showBanner() {
     console.log(chalk.cyan(figlet.textSync('PowerBackup', { font: 'Standard' })));
     console.log(chalk.gray(`Multi-Database Backup & Restore Tool v${PKG_VERSION}\n`));
+    const verboseLogFile = process.env.VERBOSE_LOG_FILE || 'logs/powerbackup-verbose.log';
+    console.log(chalk.yellow(`🔎 Verbose logs are written to: ${verboseLogFile}`));
+    console.log(chalk.gray('For detailed troubleshooting, check the verbose log file.'));
 }
 
 const program = new Command();

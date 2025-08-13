@@ -54,7 +54,7 @@ export async function createPostgresDump(url, outputPath) {
                     writeStream.write('\\.\n\n');
                 }
             } catch (tableError) {
-                log.error(`Error dumping table ${tableName}:`, tableError.message);
+                log.error(`Error dumping table ${tableName}:`, tableError);
                 // Continue with other tables
             }
         }

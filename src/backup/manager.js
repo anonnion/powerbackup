@@ -12,8 +12,26 @@ import * as openpgp from 'openpgp';
 import * as crypto from 'crypto';
 import { pipeline } from 'stream/promises';
 import { createReadStream, createWriteStream } from 'fs';
+
 import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
+import path from 'path';
 const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+function findPackageJson(startDir = __dirname) {
+    let dir = startDir;
+    while (dir !== path.parse(dir).root) {
+        const candidate = path.join(dir, 'package.json');
+        try {
+            require('fs').accessSync(candidate);
+            return candidate;
+        } catch {}
+        dir = path.dirname(dir);
+    }
+    throw new Error('package.json not found');
+}
+const PKG_VERSION = require(findPackageJson()).version;
 
 export class BackupManager {
     constructor(config) {
@@ -89,7 +107,7 @@ export class BackupManager {
             
             // Create metadata
             const meta = {
-                tool_version: require('../../../package.json').version,
+                tool_version: PKG_VERSION,
                 db: dbConfig.name,
                 file: path.basename(finalPath),
                 timestamp: new Date().toISOString(),
