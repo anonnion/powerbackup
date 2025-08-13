@@ -28,22 +28,7 @@ export { encryptFile } from './backup/encrypt.js';
 import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
 import path from 'path';
-const require = createRequire(import.meta.url);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-function findPackageJson(startDir = __dirname) {
-    let dir = startDir;
-    while (dir !== path.parse(dir).root) {
-        const candidate = path.join(dir, 'package.json');
-        try {
-            require('fs').accessSync(candidate);
-            return candidate;
-        } catch {}
-        dir = path.dirname(dir);
-    }
-    throw new Error('package.json not found');
-}
-export const PKG_VERSION = require(findPackageJson()).version;
+import { PKG_VERSION } from './utils/pkg-version.js';
 export const VERSION = PKG_VERSION;
 export const DESCRIPTION = 'Multi-Database Backup & Restore Tool with Beautiful Logging & Restore Locations';
 

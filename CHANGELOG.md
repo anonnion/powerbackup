@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.3] - 2025-08-13
+
+### 🆕 Changed
+
+* Bumped version to 2.2.3 for npm publish and deployment
+
 ## [2.2.2] - 2025-08-13
 
 ### 🆕 Changed

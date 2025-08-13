@@ -1,7 +1,7 @@
 # 🔋💾 PowerBackup v2.0.0
 
 **Backups you’ll actually enjoy running — secure, reliable, and beautiful.**
-# 🔋💾 PowerBackup v2.2.2
+# 🔋💾 PowerBackup v2.2.3
 
 **Backups you’ll actually enjoy running — secure, reliable, and beautiful.**
 
@@ -634,4 +634,4 @@ MIT — see [LICENSE](LICENSE)
 
 **🌟 Made with ❤️ by the PowerBackup Team**
 
-*Version 2.2.2 — The Beautiful Backup Experience*
+*Version 2.2.3 — The Beautiful Backup Experience*
