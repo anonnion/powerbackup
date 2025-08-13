@@ -1,7 +1,7 @@
 {
   "name": "powerbackup",
-  "version": "2.2.0",
-  "description": "Multi-Database Backup & Restore Tool v2.2.0 with Beautiful Logging & Restore Locations",
+  "version": "2.2.1",
+  "description": "Multi-Database Backup & Restore Tool v2.2.1 with Beautiful Logging & Restore Locations",
   "main": "src/index.js",
   "bin": {
     "powerbackup": "src/cli.js"

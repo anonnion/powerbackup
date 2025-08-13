@@ -45,6 +45,22 @@ program.command('list-tables <name>').description('List tables in latest backup'
 program.command('restore-table <name> <table>').description('Restore specific table from latest backup').option('--target <database>', 'Target database name (defaults to original name)').action(restoreTable);
 program.command('interactive-restore <name>').description('Interactive table restore from latest backup').option('--target <database>', 'Target database name (defaults to original name)').action(interactiveRestore);
 program.command('list-backups <name>').description('List backups for database').option('--tier <tier>', 'Backup tier', 'hourly').action(listBackups);
+
+program.command('scheduler:daemon').description('Run backup scheduler in daemon mode (continuous loop, for PM2/systemd)').action(async () => {
+    showBanner();
+    log.info('Starting PowerBackup scheduler in daemon mode...');
+    while (true) {
+        await runHourlyBackups();
+        await new Promise(r => setTimeout(r, 60 * 60 * 1000)); // Wait 1 hour
+    }
+});
+
+program.command('scheduler:once').description('Run backup scheduler once (for cron/one-off)').action(async () => {
+    showBanner();
+    log.info('Running PowerBackup scheduler once...');
+    await runHourlyBackups();
+});
+
 program.command('init').description('Initialize PowerBackup configuration').action(initPowerBackup);
 
 // Restore location management commands
