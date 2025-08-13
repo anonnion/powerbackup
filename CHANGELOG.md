@@ -4,6 +4,13 @@ All notable changes to PowerBackup will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## \[2.1.5] - 2025-08-12
+
+### 🎨 Added
+
+* **NPM Install Button**: Added prominent npm install button to README for easy installation
+* **Badge Fixes**: Fixed URL encoding for npm install badge in documentation
+
 ## \[2.1.4] - 2025-08-12
 
 ### 🔧 Fixed
@@ -197,6 +204,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and 
 
 ## Version History
 
+* **v2.1.5**: NPM install button and badge fixes.
 * **v2.1.4**: Branch references and npm header fixes.
 * **v2.1.3**: README update and version consistency fixes.
 * **v2.1.2**: Documentation updates and download statistics.
