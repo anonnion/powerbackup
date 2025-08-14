@@ -1,7 +1,7 @@
 {
   "name": "powerbackup",
-  "version": "2.4.2",
-  "description": "Multi-Database Backup & Restore Tool v2.4.2 with Beautiful Logging, REST API, Enhanced Binary Detection & Debug Tools",
+  "version": "2.4.3",
+  "description": "Multi-Database Backup & Restore Tool v2.4.3 with Beautiful Logging, REST API, Enhanced Binary Detection & Debug Tools",
   "main": "src/index.js",
   "bin": {
     "powerbackup": "src/cli.js"

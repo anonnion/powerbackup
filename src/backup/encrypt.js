@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import * as openpgp from 'openpgp';
+import { log } from '../utils/logger.js';
 
 export async function encryptFile(inputPath, outputPath, config, recipients = []) {
     try {
@@ -39,7 +40,7 @@ export async function encryptFile(inputPath, outputPath, config, recipients = []
                 }
                 
                 await fs.writeFile(passphrasePath, defaultPassphrase);
-                console.log(`Created default passphrase file at: ${passphrasePath}`);
+                log.info(`Created default passphrase file at: ${passphrasePath}`);
             }
             
             const passphrase = await fs.readFile(passphrasePath, 'utf8');

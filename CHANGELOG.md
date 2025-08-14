@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.4.3] - 2025-08-14
+
+### 🐛 Fixed
+
+* **Code Quality**: Replaced console.log with proper logging in encrypt.js for better production code quality
+
+### 🔧 Technical
+
+* **Logging**: Improved logging consistency by using structured logger instead of console.log
+
 ## [2.4.2] - 2025-08-14
 
 ### 🐛 Fixed

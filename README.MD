@@ -1,4 +1,4 @@
-# 🔋💾 PowerBackup v2.4.2
+# 🔋💾 PowerBackup v2.4.3
 
 **Backups you'll actually enjoy running — secure, reliable, and beautiful.**
 
@@ -9,7 +9,7 @@
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Test Coverage](https://img.shields.io/badge/test%20coverage-97.6%25-brightgreen.svg)](https://github.com/anonnion/powerbackup)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.4.2-orange.svg)](package.json)
+[![Version](https://img.shields.io/badge/Version-2.4.3-orange.svg)](package.json)
  
 > **The Beautiful Backup Experience** — PowerBackup isn't just another backup script.
 > It's a modern, developer-friendly tool for MySQL & PostgreSQL that mixes
@@ -17,7 +17,7 @@
 
 From daily automated backups to one-off table restores, PowerBackup gives you **full control** without drowning you in complexity. And yes — you can test your backups anytime, so you know they'll work when you actually need them.
 
-**NEW in v2.4.2: Enhanced Binary Detection & Debug Tools** — PowerBackup now includes improved PostgreSQL/MySQL binary detection, comprehensive debugging tools, and better error handling for seamless backup operations.
+**NEW in v2.4.3: Enhanced Binary Detection & Debug Tools** — PowerBackup now includes improved PostgreSQL/MySQL binary detection, comprehensive debugging tools, and better error handling for seamless backup operations.
 
 ---
 
@@ -827,4 +827,4 @@ MIT — see [LICENSE](LICENSE)
 
 **🌟 Made with ❤️ by the PowerBackup Team**
 
-*Version 2.4.2 — The Beautiful Backup Experience*
+*Version 2.4.3 — The Beautiful Backup Experience*
