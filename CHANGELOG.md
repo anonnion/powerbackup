@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.3.0] - 2025-01-27
+
+### 🚀 Added
+
+* **REST API**: Complete REST API for PowerBackup automation and integration
+* **API Authentication**: HMAC-based authentication for secure server-to-server communication
+* **API Rate Limiting**: Built-in rate limiting and CORS protection for production use
+* **API Key Management**: CLI commands to enable/disable API, check status, and generate new API keys
+* **API Audit Logging**: Comprehensive audit logging for all API operations
+* **API Validation**: Robust request validation and sanitization for all API endpoints
+* **API Documentation**: Complete API documentation with examples and authentication details
+
+### 🎨 Improved
+
+* **CLI Enhancements**: Added API management commands to CLI with beautiful help integration
+* **Configuration**: Enhanced config management to support API settings
+* **Security**: Production-ready security middleware (Helmet, CORS, Rate Limiting)
+* **Documentation**: Updated README with comprehensive API setup and usage instructions
+
+### 🔧 Technical
+
+* **Dependencies**: Added Express.js, CORS, Helmet, and express-rate-limit for API functionality
+* **Architecture**: Class-based API server implementation with proper error handling
+* **Testing**: API endpoints are ready for integration testing
+
 ## [2.2.6] - 2025-08-14
 
 ### 🎨 Improved

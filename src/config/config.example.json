@@ -5,7 +5,7 @@
     "recipients": []
   },
   "api": {
-    "enabled": false,
+    "enabled": true,
     "port": 3000,
     "host": "localhost",
     "cors": {

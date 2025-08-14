@@ -1,6 +1,6 @@
-# 🔋💾 PowerBackup v2.2.6
+# 🔋💾 PowerBackup v2.3.0
 
-**Backups you’ll actually enjoy running — secure, reliable, and beautiful.**
+**Backups you'll actually enjoy running — secure, reliable, and beautiful.**
 
 [![CI/CD Pipeline](https://github.com/anonnion/powerbackup/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/ci.yml)
 [![Test Suite](https://github.com/anonnion/powerbackup/workflows/Test%20Suite/badge.svg)](https://github.com/anonnion/powerbackup/actions/workflows/test.yml)
@@ -9,13 +9,15 @@
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Test Coverage](https://img.shields.io/badge/test%20coverage-97.6%25-brightgreen.svg)](https://github.com/anonnion/powerbackup)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.2.6-orange.svg)](package.json)
+[![Version](https://img.shields.io/badge/Version-2.3.0-orange.svg)](package.json)
  
-> **The Beautiful Backup Experience** — PowerBackup isn’t just another backup script.
-> It’s a modern, developer-friendly tool for MySQL & PostgreSQL that mixes
+> **The Beautiful Backup Experience** — PowerBackup isn't just another backup script.
+> It's a modern, developer-friendly tool for MySQL & PostgreSQL that mixes
 > *enterprise-grade reliability* with *emoji-powered, human-readable logging*.
 
-From daily automated backups to one-off table restores, PowerBackup gives you **full control** without drowning you in complexity. And yes — you can test your backups anytime, so you know they’ll work when you actually need them.
+From daily automated backups to one-off table restores, PowerBackup gives you **full control** without drowning you in complexity. And yes — you can test your backups anytime, so you know they'll work when you actually need them.
+
+**NEW in v2.3.0: Full REST API** — PowerBackup now includes a secure REST API for automation, integration, and web-based management.
 
 ---
 
@@ -49,6 +51,13 @@ From daily automated backups to one-off table restores, PowerBackup gives you **
 * Retention rules to prune old backups automatically
 * Incremental-friendly
 * AWS S3 integration with auto-rotation
+
+### 🔌 REST API Ready
+
+* Secure REST API for automation and integration
+* HMAC-based authentication for server-to-server communication
+* Rate limiting and CORS protection
+* Full CRUD operations for databases, backups, and restores
 
 ---
 
@@ -120,6 +129,10 @@ powerbackup test-restore mydatabase
 | `powerbackup restore <db>`  | Actual restore (destructive)       |
 | `powerbackup list-tables <db>` | List tables in backup              |
 | `powerbackup interactive-restore <db>` | Pick specific tables to restore    |
+| `powerbackup api:enable`       | Enable REST API                    |
+| `powerbackup api:disable`      | Disable REST API                   |
+| `powerbackup api:status`       | Show API status                    |
+| `powerbackup api:generate-key` | Generate new API keys              |
 
 For all commands, options, and advanced usage, scroll down to [Command Reference](#-command-reference).
 
@@ -168,6 +181,15 @@ For all commands, options, and advanced usage, scroll down to [Command Reference
 * Push backups to AWS S3 directly
 * Hourly/daily/weekly/monthly/yearly retention tiers
 * Auto-rotate backups to save space
+
+### 🔌 REST API Integration
+
+* Secure REST API for automation and web-based management
+* HMAC-based authentication for server-to-server communication
+* Rate limiting and CORS protection for production use
+* Full CRUD operations for databases, backups, and restores
+* Audit logging for compliance and monitoring
+* Easy enable/disable via CLI commands
 
 ### Fully Tested
 
@@ -276,13 +298,69 @@ Edit `src/config/config.json` with your DB settings, retention policies, and opt
 ```bash
 export MYSQL_URL="mysql://user:pass@localhost:3306/db"
 export POSTGRES_URL="postgresql://user:pass@localhost:5432/db"
-export LOG_LEVEL="debug"
 ```
+
+### 🔌 REST API Setup
+
+PowerBackup includes a secure REST API for automation and integration:
+
+```bash
+# Enable the API
+powerbackup api:enable
+
+# Check API status
+powerbackup api:status
+
+# Start the API server
+npm run api
+
+# Or in development mode with auto-reload
+npm run api:dev
+```
+
+The API will be available at `http://localhost:3000` by default. You can configure the API settings in your `config.json`:
+
+```json
+{
+  "api": {
+    "enabled": true,
+    "port": 3000,
+    "host": "localhost",
+    "cors": {
+      "origins": ["http://localhost:3000"]
+    },
+    "rateLimit": {
+      "max": 100,
+      "windowMs": 900000
+    },
+    "auth": {
+      "hmacSecret": "your-hmac-secret",
+      "jwtSecret": "your-jwt-secret",
+      "tokenExpiry": "24h"
+    }
+  }
+}
+```
+
+**API Endpoints:**
+- `GET /api/status` - System status and health
+- `GET /api/databases` - List configured databases
+- `POST /api/databases` - Add new database
+- `GET /api/backups/:db` - List backups for database
+- `POST /api/backups/:db` - Create backup
+- `POST /api/restores/:db` - Restore database
+- `GET /api/tables/:db` - List tables in backup
+- `GET /api/logs` - Access system logs
+
+**Authentication:**
+The API uses HMAC-based authentication for secure server-to-server communication. Include these headers in your requests:
+- `X-API-Key`: Your API key
+- `X-Signature`: HMAC signature of the request
+- `X-Timestamp`: Request timestamp
 
 ---
 
 ## 🛠 Command Reference
-
 
 ### 🎯 **Quick Commands**
 | Command | Description | Example |
@@ -305,6 +383,14 @@ export LOG_LEVEL="debug"
 | `powerbackup restore <db>` | Actual restore | `--target <db>` |
 | `powerbackup restore-table <db> <table>` | Restore table | `--target <db>` |
 | `powerbackup list-backups <db>` | List backups | `--tier <tier>` |
+
+### 🔌 **API Commands**
+| Command | Description | Example |
+|---------|-------------|---------|
+| `powerbackup api:enable` | Enable REST API | `powerbackup api:enable` |
+| `powerbackup api:disable` | Disable REST API | `powerbackup api:disable` |
+| `powerbackup api:status` | Show API status | `powerbackup api:status` |
+| `powerbackup api:generate-key` | Generate new API keys | `powerbackup api:generate-key` |
 
 ### 🧪 **Testing Commands**
 | Command | Description |
@@ -339,6 +425,23 @@ Create or edit `src/config/config.json`:
   "gpg": {
     "symmetric_passphrase_file": "./src/config/passphrase",
     "recipients": []
+  },
+  "api": {
+    "enabled": true,
+    "port": 3000,
+    "host": "localhost",
+    "cors": {
+      "origins": ["http://localhost:3000"]
+    },
+    "rateLimit": {
+      "max": 100,
+      "windowMs": 900000
+    },
+    "auth": {
+      "hmacSecret": null,
+      "jwtSecret": null,
+      "tokenExpiry": "24h"
+    }
   },
   "databases": [
     {
@@ -383,26 +486,6 @@ export POSTGRES_URL="postgresql://user:pass@localhost:5432/db"
 
 # Logging
 export LOG_LEVEL="debug"  # error, warn, info, success, debug
-```
-
-## 🔐 Security Setup
-
-### GPG Encryption
-
-1. **Create Passphrase File**:
-```bash
-echo "your-secure-passphrase" > src/config/passphrase
-chmod 600 src/config/passphrase
-```
-
-2. **Public Key Encryption** (Optional):
-```bash
-# Add recipient public keys to config
-{
-  "gpg": {
-    "recipients": ["user@example.com", "backup@company.com"]
-  }
-}
 ```
 
 ## 📊 Usage Examples
@@ -454,8 +537,6 @@ powerbackup restore-table myapp users --target myapp-test
 # Test restore at 3 AM daily
 0 3 * * * powerbackup test-restore myapp
 ```
-
-
 
 ---
 
@@ -563,7 +644,6 @@ Configure automatic pruning in your database config:
 
 📖 **For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 
-
 ---
 
 ## 🔐 Security Setup
@@ -632,4 +712,4 @@ MIT — see [LICENSE](LICENSE)
 
 **🌟 Made with ❤️ by the PowerBackup Team**
 
-*Version 2.2.3 — The Beautiful Backup Experience*
+*Version 2.3.0 — The Beautiful Backup Experience*

@@ -255,12 +255,71 @@ tail -f logs/cron.log
 ## 🔄 Manual Backup & Restore
 
 ```bash
-# Run backup once
+# Create backup
 powerbackup create-now myapp
 
 # Test restore
 powerbackup test-restore myapp
 
-# Prune old backups
-powerbackup scheduler:once
+# Actual restore
+powerbackup restore myapp
+```
+
+## 🔌 API Deployment
+
+PowerBackup includes a REST API for automation and integration:
+
+### Enable API
+
+```bash
+# Enable the API
+powerbackup api:enable
+
+# Check status
+powerbackup api:status
+
+# Start API server
+npm run api
+```
+
+### Production API Setup
+
+For production API deployment:
+
+```bash
+# 1. Enable API with secure configuration
+powerbackup api:enable
+
+# 2. Configure firewall (allow port 3000 or your custom port)
+sudo ufw allow 3000
+
+# 3. Start API with PM2 for production
+pm2 start "npm run api" --name "powerbackup-api"
+
+# 4. Save PM2 configuration
+pm2 save
+
+# 5. Setup PM2 startup script
+pm2 startup
+```
+
+### API Security
+
+* Configure CORS origins in `config.json`
+* Use HTTPS in production
+* Implement proper rate limiting
+* Monitor API access logs
+* Regularly rotate API keys with `powerbackup api:generate-key`
+
+### API Monitoring
+
+```bash
+# Check API status
+powerbackup api:status
+
+# View API logs
+pm2 logs powerbackup-api
+
+# Monitor API performance
+pm2 monit
 ```
