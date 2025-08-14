@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.4.2] - 2025-08-14
+
+### 🐛 Fixed
+
+* **SQL Validation**: Fixed overly strict SQL dump validation that was incorrectly rejecting valid pg_dump output
+* **Backup Processing**: Improved validation logic to check for SQL patterns anywhere in the file, not just at the beginning
+
+### 🔧 Technical
+
+* **Validation Logic**: Changed from line-start regex to content-based validation for better compatibility with different dump formats
+
 ## [2.4.1] - 2025-08-14
 
 ### 🐛 Fixed

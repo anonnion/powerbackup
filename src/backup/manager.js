@@ -48,7 +48,10 @@ export class BackupManager {
             const sqlData = await fs.readFile(sqlPath);
             const sqlPreview = sqlData.toString('utf8').split('\n').slice(0, 5).join('\n');
             log.info('SQL dump preview:', sqlPreview);
-            if (!sqlData.toString('utf8').match(/^[-\s]*(?:PowerBackup|CREATE|INSERT|SET|COPY)/)) {
+            
+            // More flexible validation - check for common SQL patterns anywhere in the file
+            const sqlContent = sqlData.toString('utf8');
+            if (!sqlContent.match(/(?:CREATE|INSERT|SET|COPY|--|PowerBackup)/)) {
                 throw new Error('Generated SQL dump does not appear to be valid');
             }
             // Compress using gzip
