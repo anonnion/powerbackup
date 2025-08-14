@@ -51,7 +51,8 @@ export async function runMySqlDump(url, outputPath, schemaOnly = false) {
             child.stdout.pipe(outStream);
 
             child.stderr.on('data', (data) => {
-                log.error(`[mysqldump] ${data}`);
+                // mysqldump writes progress info to stderr, so log as info instead of error
+                log.info(`[mysqldump] ${data}`);
             });
             child.on('close', (code) => {
                 if (code === 0) {

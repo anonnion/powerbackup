@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.4.1] - 2025-08-14
+
+### 🐛 Fixed
+
+* **PostgreSQL Dump Format**: Fixed pg_dump to output SQL format (-F p) instead of binary format (-F c) for better compatibility
+* **Logging Improvements**: Fixed pg_dump and mysqldump to log progress messages as info instead of error level
+* **Restore Compatibility**: Ensured restore functionality works correctly with SQL format dumps
+
+### 🔧 Technical
+
+* **Dump Format**: Changed pg_dump format from binary (-F c) to SQL (-F p) for universal compatibility
+* **Error Logging**: Updated stderr logging in pgdump.js and mysqldump.js to use info level for progress messages
+* **Testing**: Added format validation to ensure dumps are in correct SQL format
+
 ## [2.4.0] - 2025-08-14
 
 ### 🚀 Added

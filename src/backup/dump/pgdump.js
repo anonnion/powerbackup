@@ -19,7 +19,8 @@ export async function runPgDump(url, outputPath) {
             if (parsed.port) args.push('-p', parsed.port);
             if (parsed.username) args.push('-U', parsed.username);
             if (parsed.pathname) args.push('-d', parsed.pathname.replace(/^\//, ''));
-            args.push('-F', 'c');
+            // Use SQL format instead of binary format for compatibility
+            args.push('-F', 'p'); // 'p' for plain SQL format
             args.push('-f', outputPath);
             args.push('-v'); // Add verbose output for debugging
             
@@ -72,7 +73,8 @@ export async function runPgDump(url, outputPath) {
             
             child.stderr.on('data', (data) => {
                 stderr += data.toString();
-                log.error(`[pg_dump] ${data.toString().trim()}`);
+                // pg_dump writes progress info to stderr, so log as info instead of error
+                log.info(`[pg_dump] ${data.toString().trim()}`);
             });
             
             child.on('close', (code) => {
