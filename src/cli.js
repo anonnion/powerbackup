@@ -8,7 +8,12 @@ import fs from 'fs/promises';
 import path from 'path';
 import { BackupManager } from './backup/manager.js';
 import { log } from './utils/logger.js';
-import { loadConfig } from './utils/config.js';
+import { loadConfig, saveConfig } from './utils/config.js';
+import { detectMySQLPath, detectPostgreSQLPath } from './utils/find-binary.js';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import os from 'os';
+const execAsync = promisify(exec);
 // Load config.json at runtime so it works globally
 let configPath = path.resolve(process.cwd(), './src/config/config.json');
 try {
@@ -93,6 +98,90 @@ program.command('api:disable').description('Disable PowerBackup API').action(dis
 program.command('api:status').description('Show API status').action(apiStatus);
 program.command('api:generate-key').description('Generate new API keys').action(generateAPIKeys);
 
+// Binary path management commands
+/**
+ * Set binary paths for MySQL and PostgreSQL executables
+ * @param {Object} options Command options
+ */
+async function setBinaryPath(options) {
+    try {
+        const config = global.powerbackupConfig || {};
+        config.binaries = config.binaries || {};
+
+        if (!options.mysql && !options.postgres) {
+            // Auto-detect paths if no options provided
+            log.info('🔍 Detecting database binaries...');
+
+            const mysqlPath = await detectMySQLPath();
+            if (mysqlPath) {
+                log.success('Found MySQL binaries:', mysqlPath);
+                config.binaries.mysqlPath = mysqlPath;
+            } else {
+                log.warn('MySQL binaries not found in common locations');
+            }
+
+            const postgresPath = await detectPostgreSQLPath();
+            if (postgresPath) {
+                log.success('Found PostgreSQL binaries:', postgresPath);
+                config.binaries.postgresPath = postgresPath;
+            } else {
+                log.warn('PostgreSQL binaries not found in common locations');
+            }
+
+            log.info('\nCurrent binary paths:');
+            log.info('MySQL:');
+            log.info(`  "${config.binaries.mysqlPath || 'Not set'}"`);
+            log.info('PostgreSQL:');
+            log.info(`  "${config.binaries.postgresPath || 'Not set'}"`);
+
+            if (config.binaries.mysqlPath || config.binaries.postgresPath) {
+                await saveConfig(config);
+            }
+            return;
+        }
+
+        if (options.mysql) {
+            config.binaries.mysqlPath = path.resolve(options.mysql);
+            // Verify the path contains the binaries
+            try {
+                const mysqlExists = await execAsync(
+                    os.platform().startsWith('win')
+                        ? `if exist "${config.binaries.mysqlPath}\\mysql.exe" (exit 0) else (exit 1)`
+                        : `test -f "${config.binaries.mysqlPath}/mysql"`
+                );
+                log.success(`MySQL binary path set and verified: ${config.binaries.mysqlPath}`);
+            } catch {
+                log.warn('MySQL binaries not found in specified path. Make sure mysql.exe exists in this directory.');
+            }
+        }
+        
+        if (options.postgres) {
+            config.binaries.postgresPath = path.resolve(options.postgres);
+            // Verify the path contains the binaries
+            try {
+                const psqlExists = await execAsync(
+                    os.platform().startsWith('win')
+                        ? `if exist "${config.binaries.postgresPath}\\psql.exe" (exit 0) else (exit 1)`
+                        : `test -f "${config.binaries.postgresPath}/psql"`
+                );
+                log.success(`PostgreSQL binary path set and verified: ${config.binaries.postgresPath}`);
+            } catch {
+                log.warn('PostgreSQL binaries not found in specified path. Make sure psql.exe exists in this directory.');
+            }
+        }
+
+        await saveConfig(config);
+    } catch (error) {
+        log.error('Failed to set binary path:', error.message);
+    }
+}
+
+program.command('set-binary-path')
+    .description('Set path to MySQL/PostgreSQL executables')
+    .option('--mysql <path>', 'Path to MySQL base directory (containing mysql and mysqldump)')
+    .option('--postgres <path>', 'Path to PostgreSQL base directory (containing psql, pg_dump, pg_restore)')
+    .action(setBinaryPath);
+
 async function loadCliConfig() {
     const configPath = path.resolve(process.cwd(), program.opts().config);
     try {
@@ -106,15 +195,6 @@ async function loadCliConfig() {
             return JSON.parse(content);
         }
         throw new Error(`Failed to load config: ${e.message}`);
-    }
-}
-
-async function saveConfig(config) {
-    try {
-        const configPath = path.resolve(process.cwd(), program.opts().config);
-        await fs.writeFile(configPath, JSON.stringify(config, null, 2));
-    } catch (e) {
-        throw new Error(`Failed to save config: ${e.message}`);
     }
 }
 

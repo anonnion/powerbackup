@@ -21,6 +21,12 @@ npm install -g powerbackup
 # Initialize PowerBackup
 powerbackup init
 
+# Configure database binary paths (will auto-detect common installations)
+powerbackup set-binary-path
+
+# Or manually set binary paths if auto-detection fails
+powerbackup set-binary-path --mysql /usr/bin --postgres /usr/lib/postgresql/15/bin
+
 # Add your databases
 powerbackup add-db
 

@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.2.6] - 2025-08-14
+
+### 🎨 Improved
+
+* **Automatic Binary Detection**: Enhanced `set-binary-path` command with automatic detection of MySQL and PostgreSQL installations
+* **Smarter Path Validation**: Added verification of binary paths to ensure they contain required executables
+* **Common Locations Support**: Added detection of common installation paths on Windows and Unix systems
+* **Improved Feedback**: Better status messages and path validation feedback for database binary configuration
+
+## [2.2.5] - 2025-08-14
+
+### 🚀 Added
+
+* **Binary Path Configuration**: Added `set-binary-path` command to allow users to configure MySQL and PostgreSQL executable paths
+* Enhanced config management to support custom binary paths for both MySQL and PostgreSQL
+* Improved error handling and path resolution for database executables
+
 ## [2.2.3] - 2025-08-13
 
 ### 🆕 Changed

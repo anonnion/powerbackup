@@ -1,6 +1,6 @@
 {
   "name": "powerbackup-core",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "PowerBackup Core Dependencies",
   "type": "module",
   "scripts": {
