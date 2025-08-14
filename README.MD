@@ -1,6 +1,3 @@
-# 🔋💾 PowerBackup v2.0.0
-
-**Backups you’ll actually enjoy running — secure, reliable, and beautiful.**
 # 🔋💾 PowerBackup v2.2.6
 
 **Backups you’ll actually enjoy running — secure, reliable, and beautiful.**
