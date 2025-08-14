@@ -1,4 +1,4 @@
-# 🔋💾 PowerBackup v2.3.0
+# 🔋💾 PowerBackup v2.4.0
 
 **Backups you'll actually enjoy running — secure, reliable, and beautiful.**
 
@@ -9,7 +9,7 @@
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Test Coverage](https://img.shields.io/badge/test%20coverage-97.6%25-brightgreen.svg)](https://github.com/anonnion/powerbackup)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.3.0-orange.svg)](package.json)
+[![Version](https://img.shields.io/badge/Version-2.4.0-orange.svg)](package.json)
  
 > **The Beautiful Backup Experience** — PowerBackup isn't just another backup script.
 > It's a modern, developer-friendly tool for MySQL & PostgreSQL that mixes
@@ -17,7 +17,7 @@
 
 From daily automated backups to one-off table restores, PowerBackup gives you **full control** without drowning you in complexity. And yes — you can test your backups anytime, so you know they'll work when you actually need them.
 
-**NEW in v2.3.0: Full REST API** — PowerBackup now includes a secure REST API for automation, integration, and web-based management.
+**NEW in v2.4.0: Enhanced Binary Detection & Debug Tools** — PowerBackup now includes improved PostgreSQL/MySQL binary detection, comprehensive debugging tools, and better error handling for seamless backup operations.
 
 ---
 
@@ -38,6 +38,7 @@ From daily automated backups to one-off table restores, PowerBackup gives you **
 ### 🗄 Multi-DB, One Tool
 
 * MySQL and PostgreSQL out of the box
+* Enhanced binary detection for better reliability
 * Easily extensible for other databases
 
 ### 🎯 Restore Without Fear
@@ -58,6 +59,13 @@ From daily automated backups to one-off table restores, PowerBackup gives you **
 * HMAC-based authentication for server-to-server communication
 * Rate limiting and CORS protection
 * Full CRUD operations for databases, backups, and restores
+
+### 🛠️ Debug & Troubleshoot
+
+* Built-in debug script for system diagnostics
+* Enhanced error messages and logging
+* Automatic binary path detection and validation
+* Comprehensive troubleshooting documentation
 
 ---
 
@@ -646,6 +654,113 @@ Configure automatic pruning in your database config:
 
 ---
 
+## 🔧 Troubleshooting
+
+### Common Issues and Solutions
+
+#### 1. GitHub Workflow Failures
+
+If you encounter `npm ci` failures in GitHub Actions:
+
+```bash
+# The workflow now automatically handles package-lock.json sync
+# But you can manually fix it locally:
+npm install
+git add package-lock.json
+git commit -m "Update package-lock.json"
+git push
+```
+
+#### 2. PostgreSQL Backup Issues
+
+**Problem**: `pg_dump CLI failed, falling back to Node.js dump`
+
+**Solutions**:
+```bash
+# Check if PostgreSQL binaries are in PATH
+which pg_dump
+
+# Set custom binary path
+powerbackup set-binary postgres /usr/lib/postgresql/17/bin
+
+# Run debug script to check configuration
+npm run debug
+```
+
+**Problem**: `function pg_get_tabledef(regclass) does not exist`
+
+**Solution**: This has been fixed in v2.3.0. The Node.js fallback now uses standard PostgreSQL queries.
+
+#### 3. Encryption Issues
+
+**Problem**: `Encryption failed: ENOENT: no such file or directory, open './src/config/passphrase'`
+
+**Solutions**:
+```bash
+# Create passphrase file
+echo "your-secure-passphrase" > src/config/passphrase
+chmod 600 src/config/passphrase
+
+# Or let PowerBackup create a default one automatically
+# (it will be created during the first backup)
+```
+
+#### 4. Binary Detection Issues
+
+**Problem**: Database binaries not found
+
+**Solutions**:
+```bash
+# Run debug script to check binary detection
+npm run debug
+
+# Manually set binary paths
+powerbackup set-binary mysql /usr/bin
+powerbackup set-binary postgres /usr/lib/postgresql/17/bin
+
+# Check if binaries are executable
+ls -la /usr/lib/postgresql/17/bin/pg_dump
+```
+
+#### 5. Permission Issues
+
+**Problem**: Permission denied errors
+
+**Solutions**:
+```bash
+# Fix file permissions
+chmod 755 src/
+chmod 600 src/config/passphrase
+chmod 755 backups/
+
+# Run with appropriate user permissions
+sudo -u postgres powerbackup create-now mydatabase
+```
+
+### Debug Mode
+
+Use the built-in debug script to diagnose issues:
+
+```bash
+npm run debug
+```
+
+This will check:
+- Package.json and package-lock.json sync
+- PostgreSQL/MySQL binary detection
+- Passphrase file existence
+- Config directory structure
+- Backup directory permissions
+
+### Getting Help
+
+1. **Run debug script**: `npm run debug`
+2. **Check logs**: Look in `logs/` directory
+3. **Enable verbose mode**: Use `--verbose` flag
+4. **Check configuration**: Verify `src/config/config.json`
+
+---
+
 ## 🔐 Security Setup
 
 * Create a passphrase file for symmetric encryption
@@ -712,4 +827,4 @@ MIT — see [LICENSE](LICENSE)
 
 **🌟 Made with ❤️ by the PowerBackup Team**
 
-*Version 2.3.0 — The Beautiful Backup Experience*
+*Version 2.4.0 — The Beautiful Backup Experience*

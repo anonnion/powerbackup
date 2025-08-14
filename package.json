@@ -1,7 +1,7 @@
 {
   "name": "powerbackup",
-  "version": "2.3.0",
-  "description": "Multi-Database Backup & Restore Tool v2.3.0 with Beautiful Logging, REST API & Restore Locations",
+  "version": "2.4.0",
+  "description": "Multi-Database Backup & Restore Tool v2.4.0 with Beautiful Logging, REST API, Enhanced Binary Detection & Debug Tools",
   "main": "src/index.js",
   "bin": {
     "powerbackup": "src/cli.js"
@@ -24,6 +24,7 @@
     "restore-table": "node src/cli.js restore-table",
     "interactive": "node src/cli.js interactive-restore",
     "backups": "node src/cli.js list-backups",
+    "debug": "node debug-backup.js",
     "test:unit": "node src/tests/unit.js",
     "test:integration": "node src/tests/integration.js",
     "test:all": "npm run test:unit && npm run test:integration",
@@ -85,7 +86,8 @@
     "setup.sh",
     "setup.bat",
     "test-global-install.sh",
-    "test-global-install.ps1"
+    "test-global-install.ps1",
+    "debug-backup.js"
   ],
   "publishConfig": {
     "access": "public"

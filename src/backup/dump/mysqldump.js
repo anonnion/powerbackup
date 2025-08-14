@@ -1,6 +1,8 @@
 import { spawn } from 'child_process';
 import { log } from '../../utils/logger.js';
 import { findBinary } from '../../utils/find-binary.js';
+import path from 'path';
+import { URL } from 'url';
 
 /**
  * Run mysqldump using the provided MySQL URL and output file path.
@@ -9,9 +11,9 @@ import { findBinary } from '../../utils/find-binary.js';
  * @param {boolean} schemaOnly - If true, dump schema only
  * @returns {Promise<void>}
  */
+export async function runMySqlDump(url, outputPath, schemaOnly = false) {
     return new Promise(async (resolve, reject) => {
         try {
-            const { URL } = require('url');
             const parsed = new URL(url);
             const args = [];
             if (parsed.hostname) args.push('-h', parsed.hostname);
@@ -23,18 +25,28 @@ import { findBinary } from '../../utils/find-binary.js';
 
             // Try to get binary path from config or auto-detect
             let binaryPath = process.env.MYSQLDUMP_PATH || null;
-            if (!binaryPath && global.powerbackupConfig && global.powerbackupConfig.binaries && global.powerbackupConfig.binaries.mysqldump) {
-                binaryPath = global.powerbackupConfig.binaries.mysqldump;
+            
+            // Check if we have a configured mysqlPath directory
+            if (!binaryPath && global.powerbackupConfig && global.powerbackupConfig.binaries && global.powerbackupConfig.binaries.mysqlPath) {
+                const mysqlDir = global.powerbackupConfig.binaries.mysqlPath;
+                const isWin = process.platform === 'win32';
+                const mysqldumpName = isWin ? 'mysqldump.exe' : 'mysqldump';
+                binaryPath = path.join(mysqlDir, mysqldumpName);
+                log.info(`[mysqldump] Using configured mysqlPath: ${binaryPath}`);
             }
+            
+            // If still no binary path, try to find it in PATH
             if (!binaryPath) {
                 binaryPath = await findBinary('mysqldump');
                 if (binaryPath) log.info(`[mysqldump] Auto-detected binary: ${binaryPath}`);
             }
+            
+            // Last resort: use just the command name
             if (!binaryPath) binaryPath = 'mysqldump';
 
             log.info(`[mysqldump] Running: ${binaryPath} ${args.join(' ')} > ${outputPath}`);
             const child = spawn(binaryPath, args, { stdio: ['ignore', 'pipe', 'pipe'] });
-            const fs = require('fs');
+            const fs = await import('fs');
             const outStream = fs.createWriteStream(outputPath);
             child.stdout.pipe(outStream);
 
@@ -53,3 +65,4 @@ import { findBinary } from '../../utils/find-binary.js';
             reject(err);
         }
     });
+}

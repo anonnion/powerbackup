@@ -27,10 +27,17 @@ jobs:
         cache: 'npm'
         
     - name: Install dependencies
-      run: npm ci
+      run: |
+        # First update package-lock.json to match package.json
+        npm install
+        # Then use npm ci for clean install
+        npm ci
       
     - name: Install src dependencies
-      run: cd src && npm ci
+      run: |
+        cd src
+        npm install
+        npm ci
       
     - name: Run unit tests
       run: npm run test:unit
@@ -66,7 +73,11 @@ jobs:
         cache: 'npm'
         
     - name: Install dependencies
-      run: npm ci
+      run: |
+        # First update package-lock.json to match package.json
+        npm install
+        # Then use npm ci for clean install
+        npm ci
       
     - name: Check code formatting
       run: |
@@ -106,7 +117,11 @@ jobs:
         cache: 'npm'
         
     - name: Install dependencies
-      run: npm ci
+      run: |
+        # First update package-lock.json to match package.json
+        npm install
+        # Then use npm ci for clean install
+        npm ci
       
     - name: Run security audit
       run: npm audit --audit-level=moderate
@@ -132,7 +147,11 @@ jobs:
         cache: 'npm'
         
     - name: Install dependencies
-      run: npm ci
+      run: |
+        # First update package-lock.json to match package.json
+        npm install
+        # Then use npm ci for clean install
+        npm ci
       
     - name: Verify build process
       run: |

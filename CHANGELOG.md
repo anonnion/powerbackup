@@ -1,5 +1,37 @@
 # Changelog
 
+## [2.4.0] - 2025-08-14
+
+### 🚀 Added
+
+* **Enhanced Binary Detection**: Improved PostgreSQL and MySQL binary path detection with automatic version detection
+* **Debug Script**: Added comprehensive `npm run debug` script for system diagnostics and troubleshooting
+* **Better Error Handling**: Enhanced error messages and logging for binary detection and execution
+* **Automatic Passphrase Creation**: Passphrase files are now created automatically if missing during backup
+
+### 🎨 Improved
+
+* **Binary Path Logic**: Fixed binary path detection to properly use configured `postgresPath` and `mysqlPath` directories
+* **ES Module Compatibility**: Fixed `require` statements in ES modules for better Node.js compatibility
+* **GitHub Workflows**: Updated CI/CD workflows to handle package-lock.json sync issues automatically
+* **PostgreSQL Fallback**: Improved Node.js fallback for PostgreSQL dumps with proper schema extraction
+* **Documentation**: Added comprehensive troubleshooting section to README with common issues and solutions
+
+### 🐛 Fixed
+
+* **PostgreSQL Binary Detection**: Fixed issue where pg_dump would fail even when binary existed at configured path
+* **Package Lock Sync**: Fixed GitHub workflow failures due to package.json and package-lock.json sync issues
+* **Encryption Errors**: Fixed "ENOENT: no such file or directory, open './src/config/passphrase'" errors
+* **PostgreSQL Function Errors**: Fixed "function pg_get_tabledef(regclass) does not exist" errors in Node.js fallback
+* **Binary Path Configuration**: Fixed binary path detection to use correct configuration keys (`postgresPath` vs `pg_dump`)
+
+### 🔧 Technical
+
+* **Binary Detection**: Enhanced `find-binary.js` to include PostgreSQL 17+ paths and better Windows support
+* **Error Logging**: Improved error handling in `pgdump.js` and `mysqldump.js` with detailed debugging information
+* **Configuration**: Updated default passphrase file and improved configuration validation
+* **Testing**: Added debug script for comprehensive system testing and validation
+
 ## [2.3.0] - 2025-01-27
 
 ### 🚀 Added
